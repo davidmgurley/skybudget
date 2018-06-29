@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage } from 'react-native';
-import { TotalSchema } from './Schemes'
-const Realm = require('realm')
+import { TotalSchema, HomeSchema, CurrentBalancesSchema, IndividualExpenseSchema, MonthlyBudgetSchema} from './Schemes'
 
+const Realm = require('realm')
 
 
 class GettingStarted extends Component {
@@ -26,13 +26,13 @@ class GettingStarted extends Component {
   }
 
   changeInitialBudget = () => {
-    Realm.open({schema: [TotalSchema]})
-    .then(realm => {
+    const realm = new Realm({schema: [TotalSchema]})
+
       realm.write(() => {
         let allTotals = realm.objects('Total')
         realm.delete(allTotals)
       })
-    })
+
     this.setState({showCreateBudget: false,
                   totalMonthlySpending: 0,
                   billsBudget: 0,
@@ -63,7 +63,8 @@ class GettingStarted extends Component {
     }
 
 saveData = () => {
-  Realm.open({schema: [TotalSchema]})
+  var listInfo = this.state.totalMonthlySpending
+  Realm.open({schema: [TotalSchema, CurrentBalancesSchema]})
     .then(realm => {
       realm.write(() => {
         let myBudget = realm.create('Total', {
@@ -74,18 +75,19 @@ saveData = () => {
           foodBudget: parseInt(this.state.foodBudget),
           miscBudget: parseInt(this.state.miscBudget),
         })
+        let initialCurrentTotals = realm.create('CurrentBalances', {
+          entertainmentCurrent: parseInt(this.state.entertainmentBudget),
+          billsCurrent: parseInt(this.state.billsBudget),
+          transportCurrent: parseInt(this.state.transportBudget),
+          foodCurrent: parseInt(this.state.foodBudget),
+          miscCurrent: parseInt(this.state.miscBudget),
+        })
       })
-      this.props.toggleHomeScreen()
     })
+      this.props.toggleHomeScreen()
+      this.props.callbackFromParent(listInfo)
 }
 
-displayData = () => {
-  Realm.open({schema: [TotalSchema]})
-  .then(realm => {
-    let retrievedTotal = realm.objects('Total')
-      alert(JSON.stringify(retrievedTotal['0'].totalMonthlySpending))
-  })
-}
 
   render() {
     return (
@@ -118,7 +120,6 @@ displayData = () => {
             </View>
           </View>
           <Button onPress={this.saveData} color='#2A6972' title='submit' style={styles.startButton}></Button>
-          <Button onPress={this.displayData} color='#2A6972' title='check saved data' style={styles.startButton}></Button>
 
           <Button title='Change Total Monthly Spending' onPress={this.changeInitialBudget}></Button>
         </View>

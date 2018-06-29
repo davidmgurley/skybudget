@@ -12,11 +12,10 @@ import {
 
 import WelcomeScreen from './android/app/src/components/WelcomeScreen'
 import GettingStarted from './android/app/src/components/GettingStarted'
-import TestRealm from './android/app/src/components/TestRealm'
 import BudgetHomePage from './android/app/src/components/BudgetHomePage'
-import { TotalSchema } from './android/app/src/components/Schemes'
+import { TotalSchema, HomeSchema, CurrentBalancesSchema, IndividualExpenseSchema, MonthlyBudgetSchema} from './android/app/src/components/Schemes'
 
-
+const Realm = require('realm')
 
 
 export default class App extends Component {
@@ -30,13 +29,19 @@ export default class App extends Component {
   }
 
   componentDidMount(){
-    Realm.open({schema: [TotalSchema]})
-    .then(realm => {
+    Realm.open({schema: [ TotalSchema ]})
+      .then(realm => {
       let retrievedTotal = realm.objects('Total')
       if (retrievedTotal['0'].totalMonthlySpending !== undefined) {
         this.setState({totalMonthlySpending: retrievedTotal['0'].totalMonthlySpending,
-                        showBudgetHomePage: true})
+                      entertainmentBudget: retrievedTotal['0'].entertainmentBudget,
+                      billsBudget: retrievedTotal['0'].billsBudget,
+                      transportBudget: retrievedTotal['0'].transportBudget,
+                      foodBudget: retrievedTotal['0'].foodBudget,
+                      miscBudget: retrievedTotal['0'].miscBudget})
       }
+      realm.close()
+      this.setState({showBudgetHomePage: true})
     })
   }
 
@@ -45,7 +50,12 @@ export default class App extends Component {
   }
 
   toggleHomeScreen = () => {
-    this.setState({showBudgetHomePage: true})
+    this.setState({showBudgetHomePage: !this.state.showBudgetHomePage})
+
+  }
+
+  myCallback = (dataFromChild) => {
+    this.setState({totalMonthlySpending: dataFromChild})
   }
 
 
@@ -53,9 +63,9 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-      {this.state.showBudgetHomePage ? <BudgetHomePage /> :
+      {this.state.showBudgetHomePage ? <BudgetHomePage toggleHomeScreen={this.toggleHomeScreen} entertainmentBudget={this.state.entertainmentBudget} billsBudget={this.state.billsBudget} foodBudget={this.state.foodBudget} transportBudget={this.state.transportBudget} miscBudget={this.state.miscBudget} totalData={this.state.totalMonthlySpending} /> :
        <View >
-        {this.state.showWelcome ?  <GettingStarted toggleHomeScreen={this.toggleHomeScreen} /> : <WelcomeScreen toggleWelcome={this.toggleWelcome}/>}
+        {this.state.showWelcome ?  <GettingStarted callbackFromParent={this.myCallback} toggleHomeScreen={this.toggleHomeScreen} /> : <WelcomeScreen toggleWelcome={this.toggleWelcome}/>}
       </View>}
       </View>
     )

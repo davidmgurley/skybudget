@@ -12,23 +12,47 @@ export const TotalSchema = {
   }
 }
 
-export const individualExpenseSchema = {
+export const HomeSchema = {
+  name: 'Home',
+    properties: {
+      totalMonthlySpending: 'int',
+      entertainmentBudget: 'int',
+      billsBudget: 'int',
+      transportBudget: 'int',
+      foodBudget: 'int',
+      miscBudget: 'int'
+    }
+}
+
+export const CurrentBalancesSchema = {
+  name: 'CurrentBalances',
+  properties: {
+    entertainmentCurrent: 'int',
+    billsCurrent: 'int',
+    transportCurrent: 'int',
+    foodCurrent: 'int',
+    miscCurrent: 'int',
+  }
+}
+
+export const IndividualExpenseSchema = {
   name: 'IndividualExpense',
-  primaryKey: 'string',
-  properties: {date: 'date',
-              purchasedItem: 'string',
-              price: 'int'}
+  properties: { id: 'string',
+                date: 'date',
+                purchasedItem: 'string',
+                price: 'int',}
 }
 
 export const MonthlyBudgetSchema = {
   name: 'MonthlyBudget',
-  primaryKey: 'string',
+  primaryKey: 'id',
   properties: {
-    entertainmentPurchases: {type: 'list', objectType: 'IndividualExpense'},
-    billsPurchases: {type: 'list', objectType: 'IndividualExpense'},
-    foodPurchases: {type: 'list', objectType: 'IndividualExpense'},
-    transportPurchases: {type: 'list', objectType: 'IndividualExpense'},
-    miscPurchases: {type: 'list', objectType: 'IndividualExpense'},
+    id: 'string',
+    entertainmentPurchases: 'IndividualExpense[]',
+    billsPurchases: 'IndividualExpense[]',
+    foodPurchases: 'IndividualExpense[]',
+    transportPurchases: 'IndividualExpense[]',
+    miscPurchases: 'IndividualExpense[]',
 
   }
 }
