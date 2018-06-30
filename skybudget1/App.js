@@ -38,7 +38,8 @@ export default class App extends Component {
                       billsBudget: retrievedTotal['0'].billsBudget,
                       transportBudget: retrievedTotal['0'].transportBudget,
                       foodBudget: retrievedTotal['0'].foodBudget,
-                      miscBudget: retrievedTotal['0'].miscBudget})
+                      miscBudget: retrievedTotal['0'].miscBudget,
+                      reward: retrievedTotal['0'].reward})
       }
       realm.close()
       this.setState({showBudgetHomePage: true})
@@ -63,7 +64,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-      {this.state.showBudgetHomePage ? <BudgetHomePage toggleHomeScreen={this.toggleHomeScreen} entertainmentBudget={this.state.entertainmentBudget} billsBudget={this.state.billsBudget} foodBudget={this.state.foodBudget} transportBudget={this.state.transportBudget} miscBudget={this.state.miscBudget} totalData={this.state.totalMonthlySpending} /> :
+      {this.state.showBudgetHomePage ? <BudgetHomePage toggleHomeScreen={this.toggleHomeScreen} entertainmentBudget={this.state.entertainmentBudget} billsBudget={this.state.billsBudget} foodBudget={this.state.foodBudget} transportBudget={this.state.transportBudget} miscBudget={this.state.miscBudget} totalData={this.state.totalMonthlySpending} reward={this.state.reward} /> :
        <View >
         {this.state.showWelcome ?  <GettingStarted callbackFromParent={this.myCallback} toggleHomeScreen={this.toggleHomeScreen} /> : <WelcomeScreen toggleWelcome={this.toggleWelcome}/>}
       </View>}

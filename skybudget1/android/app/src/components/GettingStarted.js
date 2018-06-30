@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage } from 'react-native';
+import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, ScrollView } from 'react-native';
 import { TotalSchema, HomeSchema, CurrentBalancesSchema, IndividualExpenseSchema, MonthlyBudgetSchema} from './Schemes'
 
 const Realm = require('realm')
@@ -15,6 +15,7 @@ class GettingStarted extends Component {
                   transportBudget: 0,
                   foodBudget: 0,
                   miscBudget: 0,
+                  reward: 0,
                   displayedTotalMonthlySpending: 0,
                   controlColors: styles.dollarSignBlue,
                   realm: null}
@@ -46,11 +47,11 @@ class GettingStarted extends Component {
 
 
   updateBackgroundTotalMonthlySpending = () => {
-    var variableCombinedSpent = parseInt(this.state.entertainmentBudget) + parseInt(this.state.billsBudget) + parseInt(this.state.foodBudget) + parseInt(this.state.transportBudget) + parseInt(this.state.miscBudget)
+    var variableCombinedSpent = parseFloat(this.state.entertainmentBudget) + parseFloat(this.state.billsBudget) + parseFloat(this.state.foodBudget) + parseFloat(this.state.transportBudget) + parseFloat(this.state.miscBudget) + parseFloat(this.state.reward)
 
     this.setState({displayedTotalMonthlySpending: this.state.totalMonthlySpending - variableCombinedSpent},
       this.updateColor = () => {
-        var variableDisplayedTotalMonthlySpending = parseInt(this.state.displayedTotalMonthlySpending)
+        var variableDisplayedTotalMonthlySpending = parseFloat(this.state.displayedTotalMonthlySpending)
         if (variableDisplayedTotalMonthlySpending == 0) {
           this.setState({controlColors: styles.dollarSignGreen})
         } else if (variableDisplayedTotalMonthlySpending >= 0){
@@ -68,21 +69,25 @@ saveData = () => {
     .then(realm => {
       realm.write(() => {
         let myBudget = realm.create('Total', {
-          totalMonthlySpending: parseInt(this.state.totalMonthlySpending),
-          entertainmentBudget: parseInt(this.state.entertainmentBudget),
-          billsBudget: parseInt(this.state.billsBudget),
-          transportBudget: parseInt(this.state.transportBudget),
-          foodBudget: parseInt(this.state.foodBudget),
-          miscBudget: parseInt(this.state.miscBudget),
+          totalMonthlySpending: parseFloat(this.state.totalMonthlySpending),
+          entertainmentBudget: parseFloat(this.state.entertainmentBudget),
+          billsBudget: parseFloat(this.state.billsBudget),
+          transportBudget: parseFloat(this.state.transportBudget),
+          foodBudget: parseFloat(this.state.foodBudget),
+          miscBudget: parseFloat(this.state.miscBudget),
+          reward: parseFloat(this.state.reward)
         })
         let initialCurrentTotals = realm.create('CurrentBalances', {
-          entertainmentCurrent: parseInt(this.state.entertainmentBudget),
-          billsCurrent: parseInt(this.state.billsBudget),
-          transportCurrent: parseInt(this.state.transportBudget),
-          foodCurrent: parseInt(this.state.foodBudget),
-          miscCurrent: parseInt(this.state.miscBudget),
+          entertainmentCurrent: parseFloat(this.state.entertainmentBudget),
+          billsCurrent: parseFloat(this.state.billsBudget),
+          transportCurrent: parseFloat(this.state.transportBudget),
+          foodCurrent: parseFloat(this.state.foodBudget),
+          miscCurrent: parseFloat(this.state.miscBudget),
+          reward: parseFloat(this.state.reward)
+
         })
       })
+      realm.close()
     })
       this.props.toggleHomeScreen()
       this.props.callbackFromParent(listInfo)
@@ -94,10 +99,10 @@ saveData = () => {
       <View style={styles.container}>
       {this.state.showCreateBudget ?
         <View style={styles.container}>
-          <Text style={this.state.controlColors}>${this.state.totalMonthlySpending - ((parseInt(this.state.entertainmentBudget) + parseInt(this.state.billsBudget) + parseInt(this.state.foodBudget) + parseInt(this.state.transportBudget) + parseInt(this.state.miscBudget)))}</Text>
+          <Text style={this.state.controlColors}>${this.state.totalMonthlySpending - ((parseFloat(this.state.entertainmentBudget) + parseFloat(this.state.billsBudget) + parseFloat(this.state.foodBudget) + parseFloat(this.state.transportBudget) + parseFloat(this.state.miscBudget) + parseFloat(this.state.reward)))}</Text>
           <Text style={styles.instructions}>Alright, Lets fill out the budget!</Text>
 
-          <View>
+          <ScrollView>
             <View style={styles.dollarInputView}>
               <Text style={styles.individualBudgetInputContainer}>Entertainment</Text>
               <TextInput onSubmitEditing={this.updateBackgroundTotalMonthlySpending} onChangeText={entertainmentBudget => this.setState({entertainmentBudget})} style={styles.dollarInput} keyboardType='numeric' placeholder='0'></TextInput>
@@ -118,10 +123,15 @@ saveData = () => {
               <Text style={styles.individualBudgetInputContainer}>Misc</Text>
               <TextInput onSubmitEditing={this.updateBackgroundTotalMonthlySpending} onChangeText={miscBudget => this.setState({miscBudget})} style={styles.dollarInput} keyboardType='numeric' placeholder='0'></TextInput>
             </View>
-          </View>
-          <Button onPress={this.saveData} color='#2A6972' title='submit' style={styles.startButton}></Button>
+            <View style={styles.dollarInputView}>
+              <Text style={styles.individualBudgetInputContainer}>Reward</Text>
+              <TextInput onSubmitEditing={this.updateBackgroundTotalMonthlySpending} onChangeText={reward => this.setState({reward})} style={styles.dollarInput} keyboardType='numeric' placeholder='0'></TextInput>
+            </View>
 
-          <Button title='Change Total Monthly Spending' onPress={this.changeInitialBudget}></Button>
+            <Button onPress={this.saveData} color='#2A6972' title='submit' style={styles.startButton}></Button>
+
+            <Button title='Change Total Monthly Spending' onPress={this.changeInitialBudget}></Button>
+          </ScrollView>
         </View>
 
 

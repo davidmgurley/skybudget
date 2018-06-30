@@ -8,7 +8,8 @@ export const TotalSchema = {
     billsBudget: 'int',
     transportBudget: 'int',
     foodBudget: 'int',
-    miscBudget: 'int'
+    miscBudget: 'int',
+    reward: 'int'
   }
 }
 
@@ -20,7 +21,8 @@ export const HomeSchema = {
       billsBudget: 'int',
       transportBudget: 'int',
       foodBudget: 'int',
-      miscBudget: 'int'
+      miscBudget: 'int',
+      reward: 'int'
     }
 }
 
@@ -32,6 +34,7 @@ export const CurrentBalancesSchema = {
     transportCurrent: 'int',
     foodCurrent: 'int',
     miscCurrent: 'int',
+    reward: 'int'
   }
 }
 
@@ -40,7 +43,7 @@ export const IndividualExpenseSchema = {
   properties: { id: 'string',
                 date: 'date',
                 purchasedItem: 'string',
-                price: 'int',}
+                price: 'string',}
 }
 
 export const MonthlyBudgetSchema = {
@@ -48,6 +51,9 @@ export const MonthlyBudgetSchema = {
   primaryKey: 'id',
   properties: {
     id: 'string',
+    rewardClaimed: 'bool',
+    rewardToSavings: 'bool',
+    currentOrArchived: 'string',
     entertainmentPurchases: 'IndividualExpense[]',
     billsPurchases: 'IndividualExpense[]',
     foodPurchases: 'IndividualExpense[]',
