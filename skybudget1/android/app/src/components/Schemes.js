@@ -42,7 +42,7 @@ export const IndividualExpenseSchema = {
   name: 'IndividualExpense',
   properties: {
                 item: 'string',
-                price: 'string',}
+                price: {type: 'string', default: '0'},}
 }
 
 export const MonthlyBudgetSchema = {

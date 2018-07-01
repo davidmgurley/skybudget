@@ -64,7 +64,7 @@ class GettingStarted extends Component {
     }
 
 saveData = () => {
-  var listInfo = this.state.totalMonthlySpending
+  var listInfo = [this.state.totalMonthlySpending, this.state.entertainmentBudget, this.state.billsBudget, this.state.foodBudget, this.state.transportBudget, this.state.miscBudget, this.state.reward]
   Realm.open({schema: [TotalSchema, CurrentBalancesSchema]})
     .then(realm => {
       realm.write(() => {
@@ -131,10 +131,10 @@ saveData = () => {
             </View>
             <View style={styles.twoButtonGroup}>
             <TouchableOpacity  onPress={this.saveData}>
-              <Text style={styles.startButton}>Submit</Text>
+              <Text style={styles.startSubmitButton}>Submit</Text>
             </TouchableOpacity>
             <TouchableOpacity  onPress={this.changeInitialBudget}>
-              <Text style={styles.startButton}>Start Over</Text>
+              <Text style={styles.startOverButton}>Start Over</Text>
             </TouchableOpacity>
           </View>
           </ScrollView>
@@ -172,7 +172,9 @@ const styles = StyleSheet.create({
   individualBudgetInputContainer: {
     fontSize: 20,
     color: 'white',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    fontFamily: 'Lato-Regular'
+
   },
   dollarSignBlue: {
     fontSize:30,
@@ -180,7 +182,9 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     paddingLeft: 5,
     backgroundColor: '#2A6972',
-    borderRadius: 5
+    borderRadius: 5,
+    fontFamily: 'Lato-Regular'
+
   },
   dollarSignRed: {
     fontSize:30,
@@ -188,7 +192,9 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     paddingLeft: 5,
     backgroundColor: '#C95B74',
-    borderRadius: 5
+    borderRadius: 5,
+    fontFamily: 'Lato-Regular'
+
   },
   dollarSignGreen: {
     fontSize:30,
@@ -196,12 +202,16 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     paddingLeft: 5,
     backgroundColor: '#5D9D83',
-    borderRadius: 5
+    borderRadius: 5,
+    fontFamily: 'Lato-Regular'
+
   },
   dollarSign: {
     fontSize:30,
     color: 'white',
-    marginBottom: 3
+    marginBottom: 3,
+    fontFamily: 'Lato-Regular'
+
 
   },
   toolTip: {
@@ -217,7 +227,9 @@ const styles = StyleSheet.create({
     marginRight: 30,
     marginTop: 5,
     marginBottom: 8,
-    fontSize: 16
+    fontSize: 16,
+    fontFamily: 'Lato-Regular'
+
 
   },
   dollarInput:{
@@ -226,7 +238,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 10,
     marginBottom: 10,
-    borderRadius: 5
+    borderRadius: 5,
+    fontFamily: 'Lato-Regular'
+
   },
   dollarInputView:{
     flexDirection: 'row',
@@ -244,24 +258,56 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
     color: '#2A6972',
+    fontFamily: 'Lato-Regular'
+
   },
   instructions: {
     fontSize: 30,
     textAlign: 'center',
     color: '#2A6972',
     marginBottom: 40,
+    fontFamily: 'Lato-Regular'
+
   },
   instructions2: {
     fontSize: 25,
     textAlign: 'center',
     color: '#2A6972',
     marginBottom: 20,
+    fontFamily: 'Lato-Regular'
+
   },
   startButton: {
     color: '#2A6972',
     fontSize: 30,
     marginTop: 10,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: 'Lato-Regular'
+
+  },
+  startOverButton: {
+    color: 'white',
+    fontSize: 30,
+    marginTop: 10,
+    textAlign: 'center',
+    backgroundColor: '#C95B74',
+    paddingRight: 10,
+    paddingLeft: 10,
+    borderRadius: 5,
+    fontFamily: 'Lato-Regular'
+
+  },
+  startSubmitButton: {
+    color: 'white',
+    fontSize: 30,
+    marginTop: 10,
+    textAlign: 'center',
+    backgroundColor: '#5D9D83',
+    paddingRight: 10,
+    paddingLeft: 10,
+    borderRadius: 5,
+    fontFamily: 'Lato-Regular'
+
   },
   twoButtonGroup: {
     flexDirection: 'row',

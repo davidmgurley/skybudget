@@ -24,7 +24,6 @@ export default class App extends Component {
     this.state = {
       showWelcome: false,
       showBudgetHomePage: false,
-      dataTest: 'nothing'
     }
   }
 
@@ -56,7 +55,13 @@ export default class App extends Component {
   }
 
   myCallback = (dataFromChild) => {
-    this.setState({totalMonthlySpending: dataFromChild})
+    this.setState({totalMonthlySpending: dataFromChild[0],
+                    entertainmentBudget: dataFromChild[1],
+                    billsBudget: dataFromChild[2],
+                    transportBudget: dataFromChild[3],
+                    foodBudget: dataFromChild[4],
+                    miscBudget: dataFromChild[5],
+                    reward: dataFromChild[6]})
   }
 
 
