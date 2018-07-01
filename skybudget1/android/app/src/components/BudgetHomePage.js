@@ -654,7 +654,7 @@ class BudgetHomePage extends Component {
                   transparent={false}
                   visible={this.state.billsModalVisible}
                   onRequestClose={() => {
-                    this.setBillsModalVisible
+                    this.setBillsModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
                     <View style={{marginTop:75,justifyContent:'center'}}>
@@ -689,7 +689,7 @@ class BudgetHomePage extends Component {
                   transparent={false}
                   visible={this.state.foodModalVisible}
                   onRequestClose={() => {
-                    this.setFoodModalVisible
+                    this.setFoodModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
                     <View style={{marginTop:75,justifyContent:'center'}}>
@@ -724,7 +724,7 @@ class BudgetHomePage extends Component {
                   transparent={false}
                   visible={this.state.transportModalVisible}
                   onRequestClose={() => {
-                    this.setTransportModalVisible
+                    this.setTransportModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
                     <View style={{marginTop:75,justifyContent:'center'}}>
