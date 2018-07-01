@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, ScrollView } from 'react-native';
+import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { TotalSchema, HomeSchema, CurrentBalancesSchema, IndividualExpenseSchema, MonthlyBudgetSchema} from './Schemes'
 
 const Realm = require('realm')
@@ -99,10 +99,12 @@ saveData = () => {
       <View style={styles.container}>
       {this.state.showCreateBudget ?
         <View style={styles.container}>
-          <Text style={this.state.controlColors}>${this.state.totalMonthlySpending - ((parseFloat(this.state.entertainmentBudget) + parseFloat(this.state.billsBudget) + parseFloat(this.state.foodBudget) + parseFloat(this.state.transportBudget) + parseFloat(this.state.miscBudget) + parseFloat(this.state.reward)))}</Text>
-          <Text style={styles.instructions}>Alright, Lets fill out the budget!</Text>
+          <Image style={{width: 80, height:120}} source={require('./rocket.png')} />
 
-          <ScrollView>
+          <Text style={this.state.controlColors}>${this.state.totalMonthlySpending - ((parseFloat(this.state.entertainmentBudget) + parseFloat(this.state.billsBudget) + parseFloat(this.state.foodBudget) + parseFloat(this.state.transportBudget) + parseFloat(this.state.miscBudget) + parseFloat(this.state.reward)))}</Text>
+          <Text style={styles.instructions2}>Alright, time to fill out the budget!</Text>
+
+          <ScrollView style={{backgroundColor: '#1B2F4A'}}>
             <View style={styles.dollarInputView}>
               <Text style={styles.individualBudgetInputContainer}>Entertainment</Text>
               <TextInput onSubmitEditing={this.updateBackgroundTotalMonthlySpending} onChangeText={entertainmentBudget => this.setState({entertainmentBudget})} style={styles.dollarInput} keyboardType='numeric' placeholder='0'></TextInput>
@@ -127,10 +129,14 @@ saveData = () => {
               <Text style={styles.individualBudgetInputContainer}>Reward</Text>
               <TextInput onSubmitEditing={this.updateBackgroundTotalMonthlySpending} onChangeText={reward => this.setState({reward})} style={styles.dollarInput} keyboardType='numeric' placeholder='0'></TextInput>
             </View>
-
-            <Button onPress={this.saveData} color='#2A6972' title='submit' style={styles.startButton}></Button>
-
-            <Button title='Change Total Monthly Spending' onPress={this.changeInitialBudget}></Button>
+            <View style={styles.twoButtonGroup}>
+            <TouchableOpacity  onPress={this.saveData}>
+              <Text style={styles.startButton}>Submit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  onPress={this.changeInitialBudget}>
+              <Text style={styles.startButton}>Start Over</Text>
+            </TouchableOpacity>
+          </View>
           </ScrollView>
         </View>
 
@@ -139,14 +145,19 @@ saveData = () => {
 
 
         <View style={styles.container}>
+          <Image style={{width: 80, height:120}} source={require('./rocket.png')} />
+
           <Text style={styles.instructions}>How much would you like to spend a month?</Text>
           <View style={styles.dollarInputView}>
             <Text style={styles.dollarSign}>$</Text>
             <TextInput onChangeText={totalMonthlySpending => this.setState({totalMonthlySpending})} style={styles.dollarInput} keyboardType='numeric' placeholder='0'></TextInput>
           </View>
-          <Button onPress={this.showCreateBudget} color='#2A6972' title='submit' style={styles.startButton}>Submit</Button>
+          <TouchableOpacity  onPress={this.showCreateBudget}>
+            <Text style={styles.startButton}>Submit</Text>
+          </TouchableOpacity>
           <View style={styles.toolTip}>
-            <Text>This will contain a tip about starting a budget</Text>
+            <Text style={styles.toolTipText}>Budget Tip!</Text>
+            <Text style={styles.toolTipText}>We recommend putting your entire monthly income as your monthly spending budget. Every healthy budget has plenty of space for savings and investment. You will account for those dollars when setting up your bills section in the next step.</Text>
           </View>
         </View> }
       </View>
@@ -168,38 +179,54 @@ const styles = StyleSheet.create({
     color: 'white',
     paddingRight: 5,
     paddingLeft: 5,
-    backgroundColor: 'blue',
+    backgroundColor: '#2A6972',
+    borderRadius: 5
   },
   dollarSignRed: {
     fontSize:30,
     color: 'white',
     paddingRight: 5,
     paddingLeft: 5,
-    backgroundColor: 'red',
+    backgroundColor: '#C95B74',
+    borderRadius: 5
   },
   dollarSignGreen: {
     fontSize:30,
     color: 'white',
     paddingRight: 5,
     paddingLeft: 5,
-    backgroundColor: 'green',
+    backgroundColor: '#5D9D83',
+    borderRadius: 5
   },
   dollarSign: {
     fontSize:30,
     color: 'white',
-    paddingRight: 5,
-    paddingLeft: 5,
+    marginBottom: 3
+
   },
   toolTip: {
-    height: 100,
+    height: 190,
+    width: 350,
     backgroundColor: '#EAAF69',
+    marginTop: 50,
+    justifyContent: 'center',
+    borderRadius: 20
+  },
+  toolTipText: {
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 5,
+    marginBottom: 8,
+    fontSize: 16
+
   },
   dollarInput:{
     width: 200,
     backgroundColor: 'white',
     fontSize: 20,
-    marginLeft: 20,
+    marginLeft: 10,
     marginBottom: 10,
+    borderRadius: 5
   },
   dollarInputView:{
     flexDirection: 'row',
@@ -219,14 +246,31 @@ const styles = StyleSheet.create({
     color: '#2A6972',
   },
   instructions: {
-    fontSize: 20,
+    fontSize: 30,
     textAlign: 'center',
     color: '#2A6972',
-    marginBottom: 5,
+    marginBottom: 40,
+  },
+  instructions2: {
+    fontSize: 25,
+    textAlign: 'center',
+    color: '#2A6972',
+    marginBottom: 20,
   },
   startButton: {
-    marginTop: 20,
+    color: '#2A6972',
+    fontSize: 30,
+    marginTop: 10,
+    textAlign: 'center'
+  },
+  twoButtonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 7,
+    marginRight: 7,
+    marginBottom: 10,
   }
+
 })
 
 export default GettingStarted

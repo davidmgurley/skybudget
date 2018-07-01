@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, ScrollView, TouchableHighlight, Animated, TouchableOpacity, Modal, ListView } from 'react-native'
+import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, ScrollView, TouchableHighlight, Animated, TouchableOpacity, Modal, ListView, Image } from 'react-native'
 import Swipeout from 'react-native-swipeout'
 import { TotalSchema, CurrentBalancesSchema, HomeSchema, MonthlyBudgetSchema, IndividualExpenseSchema } from './Schemes'
 import Expand from 'react-native-simple-expand'
@@ -8,7 +8,8 @@ import Expand from 'react-native-simple-expand'
 const Realm = require('realm')
 
 var swipeoutBtns = [{
-  text: 'Button'
+  backgroundColor: '#C95B74',
+  text: 'Delete'
 }]
 
 class BudgetHomePage extends Component {
@@ -60,7 +61,7 @@ class BudgetHomePage extends Component {
             let transportPurchasesArray =[]
             let miscPurchasesArray = []
             let createEntData = populateBudgetData[i].entertainmentPurchases.map(purchase => {
-              return entPurchasesArray.push({price: purchase.price, item:purchase.purchasedItem})
+              return entPurchasesArray.push({price: parseFloat(purchase.price).toString(), item:purchase.item})
             })
             this.setState({currentMonthEntPurchases: entPurchasesArray})
             let totalEntSpent = this.state.currentMonthEntPurchases.reduce((total, purchase) => {
@@ -68,7 +69,7 @@ class BudgetHomePage extends Component {
             }, 0)
             this.setState({entertainmentSpent: totalEntSpent})
             let createBillsData = populateBudgetData[i].billsPurchases.map(purchase => {
-              return billsPurchasesArray.push({price: parseFloat(purchase.price), item:purchase.purchasedItem})
+              return billsPurchasesArray.push({price: parseFloat(purchase.price).toString(), item:purchase.item})
             })
             this.setState({currentMonthBillsPurchases: billsPurchasesArray})
             let totalBillsSpent = this.state.currentMonthBillsPurchases.reduce((total, purchase) => {
@@ -76,7 +77,7 @@ class BudgetHomePage extends Component {
             }, 0)
             this.setState({billsSpent: totalBillsSpent})
             let createFoodData = populateBudgetData[i].foodPurchases.map(purchase => {
-              return foodPurchasesArray.push({price: parseFloat(purchase.price), item:purchase.purchasedItem})
+              return foodPurchasesArray.push({price: parseFloat(purchase.price).toString(), item:purchase.item})
             })
             this.setState({currentMonthFoodPurchases: foodPurchasesArray})
             let totalFoodSpent = this.state.currentMonthFoodPurchases.reduce((total, purchase) => {
@@ -84,7 +85,7 @@ class BudgetHomePage extends Component {
             }, 0)
             this.setState({foodSpent: totalFoodSpent})
             let createTransportData = populateBudgetData[i].transportPurchases.map(purchase => {
-              return transportPurchasesArray.push({price: parseFloat(purchase.price), item:purchase.purchasedItem})
+              return transportPurchasesArray.push({price: parseFloat(purchase.price).toString(), item:purchase.item})
             })
             this.setState({currentMonthTransportPurchases: transportPurchasesArray})
             let totalTransportSpent = this.state.currentMonthTransportPurchases.reduce((total, purchase) => {
@@ -92,7 +93,7 @@ class BudgetHomePage extends Component {
             }, 0)
             this.setState({transportSpent: totalTransportSpent})
             let createMiscData = populateBudgetData[i].miscPurchases.map(purchase => {
-              return miscPurchasesArray.push({price: parseFloat(purchase.price), item:purchase.purchasedItem})
+              return miscPurchasesArray.push({price: parseFloat(purchase.price).toString(), item:purchase.item})
             })
             this.setState({currentMonthMiscPurchases: miscPurchasesArray})
             let totalMiscSpent = this.state.currentMonthMiscPurchases.reduce((total, purchase) => {
@@ -146,7 +147,10 @@ class BudgetHomePage extends Component {
 
           let newMonthExpenses = realm.create('MonthlyBudget', {
             id: this.state.currentInputMonth + ' ' + this.state.currentInputYear,
-            currentOrArchived: 'CurrentMonth'
+            currentOrArchived: 'CurrentMonth',
+            rewardClaimed: false,
+            rewardToSavings: false,
+
           })
         })
         this.setState({  realm: null,
@@ -181,7 +185,11 @@ class BudgetHomePage extends Component {
   }
 
   goToDetail = () => {
+    if(this.state.displayedMonth === 'Start a New Month to Get Started!'){
+      alert('Oops! Start a new month to get started!')
+    } else {
     this.setState({showBudgetHome: false})
+    }
   }
   goToHome = () => {
     this.setState({showBudgetHome: true})
@@ -211,6 +219,7 @@ class BudgetHomePage extends Component {
                          showBudgetHome: true,
 
                          currentMonth: 'CurrentMonth',
+                         displayedMonth: 'Start a New Month to Get Started!',
 
                          entertainmentSpent: '0',
                          billsSpent: '0',
@@ -237,15 +246,39 @@ class BudgetHomePage extends Component {
         let currentMonth = realm.objects('MonthlyBudget')
         for (i = 0; i < currentMonth.length; i++){
           if (currentMonth[i].currentOrArchived === this.state.currentMonth){
-            currentMonth[i].entertainmentPurchases.push({id: 'testID', date: new Date(), purchasedItem: this.state.currentItem, price: this.state.currentPrice})
+            currentMonth[i].entertainmentPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthEntPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthEntPurchases: joined,
                             entertainmentSpent: this.state.entertainmentSpent + parseFloat(this.state.currentPrice),
-                            entOpen: !this.state.entOpen})
+                            entOpen: !this.state.entOpen,
+                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
           }
         }
 
       })
+  }
+
+  deleteEntPurchase = (selectedItem) => {
+    Realm.open({schema: [ MonthlyBudgetSchema, IndividualExpenseSchema ]})
+      .then(realm => {
+        realm.write(()=> {
+        let currentMonth = realm.objects('MonthlyBudget')
+        for (i = 0; i < currentMonth.length; i++){
+          if (currentMonth[i].currentOrArchived === this.state.currentMonth){
+            let searchableArray = this.state.currentMonthEntPurchases
+            for (j = 0; j < searchableArray.length; j++){
+              if (searchableArray[j].item + searchableArray[j].price === selectedItem){
+                let deletedItem = searchableArray.splice(j, 1)
+                currentMonth[i].entertainmentPurchases = searchableArray
+                this.setState({currentMonthEntPurchases: searchableArray,
+                                entertainmentSpent: this.state.entertainmentSpent - parseFloat(deletedItem[0].price).toFixed(2),
+                                totalSpent: this.state.totalSpent - parseFloat(deletedItem[0].price).toFixed(2)})
+              }
+            }
+          }
+        }
+      })
+    })
   }
 
   addBillsPurchase = () => {
@@ -255,15 +288,39 @@ class BudgetHomePage extends Component {
         let currentMonth = realm.objects('MonthlyBudget')
         for (i = 0; i < currentMonth.length; i++){
           if (currentMonth[i].currentOrArchived === this.state.currentMonth){
-            currentMonth[i].billsPurchases.push({id: 'testID', date: new Date(), purchasedItem: this.state.currentItem, price: this.state.currentPrice})
+            currentMonth[i].billsPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthBillsPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthBillsPurchases: joined,
-                            billsSpent: this.state.billsSpent + this.state.currentPrice,
-                            billsOpen: !this.state.billsOpen})
+                            billsSpent: this.state.billsSpent + parseFloat(this.state.currentPrice),
+                            billsOpen: !this.state.billsOpen,
+                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
           }
         }
 
       })
+  }
+
+  deleteBillsPurchase = (selectedItem) => {
+    Realm.open({schema: [ MonthlyBudgetSchema, IndividualExpenseSchema ]})
+      .then(realm => {
+        realm.write(()=> {
+        let currentMonth = realm.objects('MonthlyBudget')
+        for (i = 0; i < currentMonth.length; i++){
+          if (currentMonth[i].currentOrArchived === this.state.currentMonth){
+            let searchableArray = this.state.currentMonthBillsPurchases
+            for (j = 0; j < searchableArray.length; j++){
+              if (searchableArray[j].item + searchableArray[j].price === selectedItem){
+                let deletedItem = searchableArray.splice(j, 1)
+                currentMonth[i].billsPurchases = searchableArray
+                this.setState({currentMonthBillsPurchases: searchableArray,
+                                billsSpent: this.state.billsSpent - parseFloat(deletedItem[0].price).toFixed(2),
+                                totalSpent: this.state.totalSpent - parseFloat(deletedItem[0].price).toFixed(2)})
+              }
+            }
+          }
+        }
+      })
+    })
   }
 
   addFoodPurchase = () => {
@@ -274,14 +331,38 @@ class BudgetHomePage extends Component {
         let currentMonth = realm.objects('MonthlyBudget')
         for (i = 0; i < currentMonth.length; i++){
           if (currentMonth[i].currentOrArchived === this.state.currentMonth){
-            currentMonth[i].foodPurchases.push({id: 'testID', date: new Date(), purchasedItem: this.state.currentItem, price: this.state.currentPrice})
+            currentMonth[i].foodPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthFoodPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthFoodPurchases: joined,
-                            foodSpent: this.state.foodSpent + this.state.currentPrice,
-                            foodOpen: !this.state.foodOpen})
+                            foodSpent: this.state.foodSpent + parseFloat(this.state.currentPrice),
+                            foodOpen: !this.state.foodOpen,
+                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
           }
         }
 
+      })
+    })
+  }
+
+  deleteFoodPurchase = (selectedItem) => {
+    Realm.open({schema: [ MonthlyBudgetSchema, IndividualExpenseSchema ]})
+      .then(realm => {
+        realm.write(()=> {
+        let currentMonth = realm.objects('MonthlyBudget')
+        for (i = 0; i < currentMonth.length; i++){
+          if (currentMonth[i].currentOrArchived === this.state.currentMonth){
+            let searchableArray = this.state.currentMonthFoodPurchases
+            for (j = 0; j < searchableArray.length; j++){
+              if (searchableArray[j].item + searchableArray[j].price === selectedItem){
+                let deletedItem = searchableArray.splice(j, 1)
+                currentMonth[i].foodPurchases = searchableArray
+                this.setState({currentMonthFoodPurchases: searchableArray,
+                                foodSpent: this.state.foodSpent - parseFloat(deletedItem[0].price).toFixed(2),
+                                totalSpent: this.state.totalSpent - parseFloat(deletedItem[0].price).toFixed(2)})
+              }
+            }
+          }
+        }
       })
     })
   }
@@ -294,14 +375,38 @@ class BudgetHomePage extends Component {
         let currentMonth = realm.objects('MonthlyBudget')
         for (i = 0; i < currentMonth.length; i++){
           if (currentMonth[i].currentOrArchived === this.state.currentMonth){
-            currentMonth[i].transportPurchases.push({id: 'testID', date: new Date(), purchasedItem: this.state.currentItem, price: this.state.currentPrice})
+            currentMonth[i].transportPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthTransportPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthTransportPurchases: joined,
-                            transportSpent: this.state.transportSpent + this.state.currentPrice,
-                            transportOpen: !this.state.transportOpen})
+                            transportSpent: this.state.transportSpent + parseFloat(this.state.currentPrice),
+                            transportOpen: !this.state.transportOpen,
+                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
           }
         }
 
+      })
+    })
+  }
+
+  deleteTransportPurchase = (selectedItem) => {
+    Realm.open({schema: [ MonthlyBudgetSchema, IndividualExpenseSchema ]})
+      .then(realm => {
+        realm.write(()=> {
+        let currentMonth = realm.objects('MonthlyBudget')
+        for (i = 0; i < currentMonth.length; i++){
+          if (currentMonth[i].currentOrArchived === this.state.currentMonth){
+            let searchableArray = this.state.currentMonthTransportPurchases
+            for (j = 0; j < searchableArray.length; j++){
+              if (searchableArray[j].item + searchableArray[j].price === selectedItem){
+                let deletedItem = searchableArray.splice(j, 1)
+                currentMonth[i].transportPurchases = searchableArray
+                this.setState({currentMonthTransportPurchases: searchableArray,
+                                transportSpent: this.state.transportSpent - parseFloat(deletedItem[0].price).toFixed(2),
+                                totalSpent: this.state.totalSpent - parseFloat(deletedItem[0].price).toFixed(2)})
+              }
+            }
+          }
+        }
       })
     })
   }
@@ -314,14 +419,38 @@ class BudgetHomePage extends Component {
         let currentMonth = realm.objects('MonthlyBudget')
         for (i = 0; i < currentMonth.length; i++){
           if (currentMonth[i].currentOrArchived === this.state.currentMonth){
-            currentMonth[i].miscPurchases.push({id: 'testID', date: new Date(), purchasedItem: this.state.currentItem, price: this.state.currentPrice})
+            currentMonth[i].miscPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthMiscPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthMiscPurchases: joined,
-                            miscSpent: this.state.miscSpent + this.state.currentPrice,
-                            miscOpen: !this.state.miscOpen})
+                            miscSpent: this.state.miscSpent + parseFloat(this.state.currentPrice),
+                            miscOpen: !this.state.miscOpen,
+                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
           }
         }
 
+      })
+    })
+  }
+
+  deleteMiscPurchase = (selectedItem) => {
+    Realm.open({schema: [ MonthlyBudgetSchema, IndividualExpenseSchema ]})
+      .then(realm => {
+        realm.write(()=> {
+        let currentMonth = realm.objects('MonthlyBudget')
+        for (i = 0; i < currentMonth.length; i++){
+          if (currentMonth[i].currentOrArchived === this.state.currentMonth){
+            let searchableArray = this.state.currentMonthMiscPurchases
+            for (j = 0; j < searchableArray.length; j++){
+              if (searchableArray[j].item + searchableArray[j].price === selectedItem){
+                let deletedItem = searchableArray.splice(j, 1)
+                currentMonth[i].miscPurchases = searchableArray
+                this.setState({currentMonthMiscPurchases: searchableArray,
+                                miscSpent: this.state.miscSpent - parseFloat(deletedItem[0].price).toFixed(2),
+                                totalSpent: this.state.totalSpent - parseFloat(deletedItem[0].price).toFixed(2)})
+              }
+            }
+          }
+        }
       })
     })
   }
@@ -358,38 +487,46 @@ class BudgetHomePage extends Component {
   render() {
 
     const fillEntData = this.state.currentMonthEntPurchases.map(purchase => {
-      return <View>
-             <Text style={{color:'white'}}>{purchase.price}</Text>
-             <Text style={{color:'white'}}>{purchase.item}</Text>
+      return <Swipeout  backgroundColor='#1B2F4A' right={[{ onPress:this.deleteEntPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
+            <View style={styles.budgetGroupPurchases}>
+             <Text style={{color:'white', fontSize:15, fontStyle: 'italic'}}>{purchase.item}</Text>
+             <Text style={{color:'white', fontSize: 15}}>{purchase.price}</Text>
              </View>
+             </Swipeout>
     })
 
     const fillBillsData = this.state.currentMonthBillsPurchases.map(purchase => {
-      return <View>
-            <Text style={{color:'white'}}>{purchase.price}</Text>
-            <Text style={{color:'white'}}>{purchase.item}</Text>
+      return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteBillsPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
+            <View style={styles.budgetGroupPurchases}>
+            <Text style={{color:'white', fontSize:15, fontStyle: 'italic'}}>{purchase.item}</Text>
+            <Text style={{color:'white', fontSize: 15}}>{purchase.price}</Text>
             </View>
+            </Swipeout>
     })
 
     const fillFoodData = this.state.currentMonthFoodPurchases.map(purchase => {
-      return <View>
-            <Text style={{color:'white'}}>{purchase.price}</Text>
-            <Text style={{color:'white'}}>{purchase.item}</Text>
+      return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteFoodPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
+            <View style={styles.budgetGroupPurchases}>
+            <Text style={{color:'white', fontSize:15, fontStyle: 'italic'}}>{purchase.item}</Text>
+            <Text style={{color:'white', fontSize: 15}}>{purchase.price}</Text>
             </View>
+            </Swipeout>
     })
 
     const fillTransportData = this.state.currentMonthTransportPurchases.map(purchase => {
-      return <View>
-            <Text style={{color:'white'}}>{purchase.price}</Text>
-            <Text style={{color:'white'}}>{purchase.item}</Text>
+      return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteTransportPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
+            <View style={styles.budgetGroupPurchases}>
+            <Text style={{color:'white', fontSize:15, fontStyle: 'italic'}}>{purchase.item}</Text>
+            <Text style={{color:'white', fontSize: 15}}>{purchase.price}</Text>
             </View>
+            </Swipeout>
     })
 
     const fillMiscData = this.state.currentMonthMiscPurchases.map(purchase => {
-      return <Swipeout right={swipeoutBtns}>
-            <View>
-            <Text style={{color:'white'}}>{purchase.price}</Text>
-            <Text style={{color:'white'}}>{purchase.item}</Text>
+      return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteMiscPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
+            <View style={styles.budgetGroupPurchases}>
+                <Text style={{color:'white', fontSize:15, fontStyle: 'italic'}}>{purchase.item}</Text>
+                <Text style={{color:'white', fontSize: 15}}>${purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -397,19 +534,34 @@ class BudgetHomePage extends Component {
 
 
     return (
-      <View>
+      <View style={{flex: 1}}>
         {this.state.showBudgetHome
           ?
           <View>
-            <Text style={{color:'#2A6972', fontSize: 50}}>SKYbudget</Text>
-              <Text style={{color:'white', fontSize: 50}}>Starting Value {this.props.totalData}</Text>
+            <View style={{flexDirection: 'row'}}>
+              <View style={styles.topBudgetInfoBlockGreen} >
+                <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30 , textAlign:'center'}}>Remaining </Text>
+                <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30, textAlign:'center'}}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
+              </View>
+              <View style={styles.topBudgetInfoBlockRed}>
+                <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center'}}>Spent</Text>
+                <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center'}}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
+              </View>
+            </View>
+            <View style={{flexDirection:'row'}}>
+            <Image style={{width: 250, height:250, marginLeft:20}} source={require('./skybudget.png')} />
+            <Image style={{width: 80, height:120, marginTop:30, marginRight: 20}} source={require('./rocket.png')} />
+            </View>
 
-            <Text style={{color:'white', fontSize: 50}}>Remaining {parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
-            <Text style={{color:'white', fontSize: 50}}>Spent So Far {parseFloat(this.state.totalSpent).toFixed(2)}</Text>
-            <Button onPress={this.goToDetail} title='Budget Detail Page'></Button>
-            <Button onPress={this.openNewMonthModal} title='Start New Month!'></Button>
+            <TouchableOpacity  onPress={this.goToDetail}>
+              <Text style={styles.startButton}>Go to detail page</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  onPress={this.openNewMonthModal}>
+              <Text style={styles.startButton}>Start a new month!</Text>
+            </TouchableOpacity>
 
-              <View  style={{marginTop: 22}}>
+
+              <View style={{marginTop: 22,}}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -417,32 +569,47 @@ class BudgetHomePage extends Component {
                   onRequestClose={() => {
                     this.openNewMonthModal()
                   }}>
-                  <View style={{marginTop: 22}}>
-                    <View>
-                      <TextInput onChangeText= {currentInputMonth => this.setState({currentInputMonth})} placeholder='Month'></TextInput>
-                      <TextInput onChangeText= {currentInputYear => this.setState({currentInputYear})} placeholder='Year' keyboardType='numeric'></TextInput>
-                      <Button title='Submit' onPress={this.startNewMonth}></Button>
-                      <Text>This will archive the current month and begin a new one. Make sure you are done inputing all of your purchases for this month before starting a new one</Text>
+                  <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
+                    <View style={{marginTop:75,justifyContent:'center'}}>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentInputMonth => this.setState({currentInputMonth})} placeholder='Month'></TextInput>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentInputYear => this.setState({currentInputYear})} placeholder='Year' keyboardType='numeric'></TextInput>
+                        <TouchableOpacity  onPress={this.startNewMonth}>
+                          <Text style={styles.startButton}>Blast off</Text>
+                        </TouchableOpacity>
+
+                        <View style={styles.toolTip}>
+                          <Text style={styles.toolTipText}>This will archive the current month and begin a new one. Make sure you are done inputing all of your purchases for this month before starting a new one</Text>
+                        </View>
                     </View>
                   </View>
                 </Modal>
               </View>
 
-            <Button onPress={this.goBackToGettingStarted} title='Erase Budget and Start Over'></Button>
+              <TouchableOpacity  onPress={this.goBackToGettingStarted}>
+                <Text style={styles.startButton}>Erase Budget and Start Over</Text>
+              </TouchableOpacity>
+
           </View>
 
           :
 
-        <ScrollView>
-          <View>
-            <Text>{this.state.displayedMonth}</Text>
-            <Text>Your Monthly Total: ${this.props.totalData}</Text>
+        <ScrollView style={{width:376}}>
+          <View style={{flexDirection: 'row'}}>
+            <View style={styles.topBudgetInfoBlockGreen} >
+              <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30 , textAlign:'center'}}>Remaining </Text>
+              <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30, textAlign:'center'}}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
+            </View>
+            <View style={styles.topBudgetInfoBlockRed}>
+              <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center'}}>Spent</Text>
+              <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center'}}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
+            </View>
           </View>
-          <View>
-            <Text>Spent</Text>
-            <Text>Remaining</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginBottom:10}}>
+            <Text style={{fontSize: 20, color:'white', marginLeft: 15}}>${this.props.totalData}</Text>
+            <Text style={{fontSize: 20, color:'white', marginRight: 15}}>{this.state.displayedMonth}</Text>
           </View>
-          <View>
+
+          <View style={{marginBottom: 40}}>
 
             <View style={styles.expandContainer}>
 
@@ -452,13 +619,15 @@ class BudgetHomePage extends Component {
                   transparent={false}
                   visible={this.state.entModalVisible}
                   onRequestClose={() => {
-                    alert('Modal has been closed.');
+                    this.setEntModalVisible()
                   }}>
-                  <View style={{marginTop: 22}}>
-                    <View>
-                      <TextInput onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
-                      <TextInput onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
-                      <Button title='Submit' onPress={this.addEntPurchase}></Button>
+                  <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
+                    <View style={{marginTop:75,justifyContent:'center'}}>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
+                        <TouchableOpacity  onPress={this.addEntPurchase}>
+                          <Text style={styles.startButton}>Submit</Text>
+                        </TouchableOpacity>
                     </View>
                   </View>
                 </Modal>
@@ -472,7 +641,9 @@ class BudgetHomePage extends Component {
                 <View>
                   {fillEntData}
                 </View>
-                <Button onPress={this.setEntModalVisible} title='Add Purchase'></Button>
+                <TouchableOpacity  onPress={this.setEntModalVisible}>
+                  <Text style={styles.purchaseButton}>Add Purchase</Text>
+                </TouchableOpacity>
               </Expand>
             </View>
             <View style={styles.expandContainer}>
@@ -483,13 +654,15 @@ class BudgetHomePage extends Component {
                   transparent={false}
                   visible={this.state.billsModalVisible}
                   onRequestClose={() => {
-                    alert('Modal has been closed.');
+                    this.setBillsModalVisible
                   }}>
-                  <View style={{marginTop: 22}}>
-                    <View>
-                      <TextInput onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
-                      <TextInput onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
-                      <Button title='Submit' onPress={this.addBillsPurchase}></Button>
+                  <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
+                    <View style={{marginTop:75,justifyContent:'center'}}>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
+                        <TouchableOpacity  onPress={this.addBillsPurchase}>
+                          <Text style={styles.startButton}>Submit</Text>
+                        </TouchableOpacity>
                     </View>
                   </View>
                 </Modal>
@@ -503,7 +676,9 @@ class BudgetHomePage extends Component {
                 <View>
                   {fillBillsData}
                 </View>
-                <Button onPress={this.setBillsModalVisible} title='Add Purchase'></Button>
+                <TouchableOpacity  onPress={this.setBillsModalVisible}>
+                  <Text style={styles.purchaseButton}>Add Purchase</Text>
+                </TouchableOpacity>
               </Expand>
             </View>
 
@@ -514,13 +689,15 @@ class BudgetHomePage extends Component {
                   transparent={false}
                   visible={this.state.foodModalVisible}
                   onRequestClose={() => {
-                    alert('Modal has been closed.');
+                    this.setFoodModalVisible
                   }}>
-                  <View style={{marginTop: 22}}>
-                    <View>
-                      <TextInput onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
-                      <TextInput onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
-                      <Button title='Submit' onPress={this.addFoodPurchase}></Button>
+                  <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
+                    <View style={{marginTop:75,justifyContent:'center'}}>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
+                        <TouchableOpacity  onPress={this.addFoodPurchase}>
+                          <Text style={styles.startButton}>Submit</Text>
+                        </TouchableOpacity>
                     </View>
                   </View>
                 </Modal>
@@ -534,7 +711,9 @@ class BudgetHomePage extends Component {
                 <View>
                   {fillFoodData}
                 </View>
-                <Button onPress={this.setFoodModalVisible} title='Add Purchase'></Button>
+                <TouchableOpacity  onPress={this.setFoodModalVisible}>
+                  <Text style={styles.purchaseButton}>Add Purchase</Text>
+                </TouchableOpacity>
               </Expand>
             </View>
             <View style={styles.expandContainer}>
@@ -545,13 +724,15 @@ class BudgetHomePage extends Component {
                   transparent={false}
                   visible={this.state.transportModalVisible}
                   onRequestClose={() => {
-                    alert('Modal has been closed.');
+                    this.setTransportModalVisible
                   }}>
-                  <View style={{marginTop: 22}}>
-                    <View>
-                      <TextInput onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
-                      <TextInput onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
-                      <Button title='Submit' onPress={this.addTransportPurchase}></Button>
+                  <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
+                    <View style={{marginTop:75,justifyContent:'center'}}>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
+                        <TouchableOpacity  onPress={this.addTransportPurchase}>
+                          <Text style={styles.startButton}>Submit</Text>
+                        </TouchableOpacity>
                     </View>
                   </View>
                 </Modal>
@@ -565,24 +746,28 @@ class BudgetHomePage extends Component {
                 <View>
                   {fillTransportData}
                 </View>
-                <Button onPress={this.setTransportModalVisible} title='Add Purchase'></Button>
+                <TouchableOpacity  onPress={this.setTransportModalVisible}>
+                  <Text style={styles.purchaseButton}>Add Purchase</Text>
+                </TouchableOpacity>
               </Expand>
             </View>
             <View style={styles.expandContainer}>
 
-              <View  style={{marginTop: 22}}>
+              <View  style={{ justifyContent: 'center', marginTop: 22}}>
                 <Modal
                   animationType="slide"
                   transparent={false}
                   visible={this.state.miscModalVisible}
                   onRequestClose={() => {
-                    alert('Modal has been closed.');
+                    this.setMiscModalVisible()
                   }}>
-                  <View style={{marginTop: 22}}>
-                    <View>
-                      <TextInput onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
-                      <TextInput onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
-                      <Button title='Submit' onPress={this.addMiscPurchase}></Button>
+                  <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
+                    <View style={{marginTop:75,justifyContent:'center'}}>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
+                      <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
+                        <TouchableOpacity  onPress={this.addMiscPurchase}>
+                          <Text style={styles.startButton}>Blast off</Text>
+                        </TouchableOpacity>
                     </View>
                   </View>
                 </Modal>
@@ -596,19 +781,27 @@ class BudgetHomePage extends Component {
                 <View>
                   {fillMiscData}
                 </View>
-                <Button onPress={this.setMiscModalVisible} title='Add Purchase'></Button>
+                <TouchableOpacity  onPress={this.setMiscModalVisible}>
+                  <Text style={styles.purchaseButton}>Add Purchase</Text>
+                </TouchableOpacity>
               </Expand>
             </View>
-            <View>
-              <Text style={styles.categoryText}>Reward</Text>
-              <View style={{flexDirection:'row'}}>
-                <Button onPress={this.claimReward} color='#EAAF69' title='Claim Reward'></Button>
-                <Text style={styles.remainingText}>${parseFloat(this.props.reward)}</Text>
-                <Button onPress={this.sendToSavings} color='#EAAF69' title='Send To Savings'></Button>
+            <View style={{marginTop:35, justifyContent:'center'}}>
+              <Text style={styles.categoryTextReward}>Reward</Text>
+              <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                <TouchableOpacity  onPress={this.claimReward}>
+                  <Text style={styles.rewardButton}>Claim Reward</Text>
+                </TouchableOpacity>
+                <Text style={styles.rewardText}>${parseFloat(this.props.reward)}</Text>
+                  <TouchableOpacity  onPress={this.sendToSavings}>
+                    <Text style={styles.rewardButton}>Send To Savings</Text>
+                  </TouchableOpacity>
               </View>
 
             </View>
-            <Button onPress={this.goToHome} title='QuickView'></Button>
+            <TouchableOpacity  onPress={this.goToHome}>
+              <Text style={styles.purchaseButton}>Home Page</Text>
+            </TouchableOpacity>
 
           </View>
         </ScrollView>}
@@ -624,7 +817,16 @@ class BudgetHomePage extends Component {
       flex: 1,
       justifyContent: 'space-between',
       flexDirection: 'row',
-      marginBottom: 10,
+      marginBottom: 5,
+    },
+    budgetGroupPurchases:{
+      backgroundColor: '#1B2F4A',
+      flex: 1,
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      marginBottom: 5,
+      paddingTop: 5,
+      paddingBottom: 5,
     },
     expanded: {
       backgroundColor: '#1B2F4A',
@@ -634,17 +836,91 @@ class BudgetHomePage extends Component {
       backgroundColor: '#1B2F4A',
     },
     categoryText: {
+      fontSize: 25,
+      color: 'white',
+    },
+    categoryTextReward: {
+      textAlign: 'center',
       fontSize: 30,
-      color: 'white'
+      color: 'white',
+      marginBottom: 8
     },
     remainingText: {
       fontSize: 30,
       backgroundColor: '#2A6972',
       color: 'white',
+      borderRadius: 5,
+      width: 150,
+      textAlign:'center'
+    },
+    rewardText: {
+      fontSize: 25,
+      backgroundColor: '#2A6972',
+      color: 'white',
+      borderRadius: 5,
+      width: 120,
+      textAlign:'center'
     },
     remainingTextRed: {
       fontSize: 30,
       backgroundColor: '#C95B74',
+      color: 'white',
+    },
+    topBudgetInfoBlockRed: {
+      marginRight:3,
+      marginLeft:3,
+      paddingTop:20,
+      paddingBottom:20,
+      borderBottomEndRadius:25,
+      borderBottomStartRadius:25,
+      flex: 1,
+      backgroundColor:'#C95B74'
+    },
+    topBudgetInfoBlockGreen: {
+      marginRight:3,
+      marginLeft:3,
+      paddingTop:20,
+      paddingBottom:20,
+      borderBottomEndRadius:25,
+      borderBottomStartRadius:25,
+      flex: 1,
+      backgroundColor:'#5D9D83'
+    },
+    startButton: {
+      color: '#2A6972',
+      fontSize: 30,
+      marginTop: 5,
+      textAlign: 'center'
+    },
+    purchaseButton:{
+      color: '#2A6972',
+      fontSize: 30,
+      marginTop: 5,
+      textAlign: 'center'
+    },
+    rewardButton:{
+      fontSize: 15,
+      textAlign: 'center',
+      color: '#EAAF69',
+    },
+    toolTip: {
+      height: 190,
+      marginLeft: 8,
+      width: 395,
+      backgroundColor: '#EAAF69',
+      marginTop: 50,
+      justifyContent: 'center',
+      borderRadius: 20
+    },
+    toolTipText: {
+      marginLeft: 30,
+      marginRight: 30,
+      marginTop: 5,
+      marginBottom: 8,
+      fontSize: 18
+    },
+    modalText: {
+      fontSize: 25,
       color: 'white',
     }
   })

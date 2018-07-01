@@ -40,9 +40,8 @@ export const CurrentBalancesSchema = {
 
 export const IndividualExpenseSchema = {
   name: 'IndividualExpense',
-  properties: { id: 'string',
-                date: 'date',
-                purchasedItem: 'string',
+  properties: {
+                item: 'string',
                 price: 'string',}
 }
 
