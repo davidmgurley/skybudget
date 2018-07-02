@@ -13,7 +13,7 @@ class WelcomeScreen extends Component {
           </View>
 
           <Text style={styles.instructions}>
-            Money is Emotional
+            Live Looking Up
           </Text>
         </View>
         <View >

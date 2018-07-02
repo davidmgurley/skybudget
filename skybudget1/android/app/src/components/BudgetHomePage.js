@@ -494,7 +494,7 @@ class BudgetHomePage extends Component {
       return <Swipeout  backgroundColor='#1B2F4A' right={[{ onPress:this.deleteEntPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
              <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-             <Text style={{color:'white', fontSize: 15,fontFamily: 'Lato-Regular'}}>{purchase.price}</Text>
+             <Text style={{color:'white', fontSize: 15,fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
              </View>
              </Swipeout>
     })
@@ -503,7 +503,7 @@ class BudgetHomePage extends Component {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteBillsPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
             <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-            <Text style={{color:'white', fontSize: 15,fontFamily: 'Lato-Regular'}}>{purchase.price}</Text>
+            <Text style={{color:'white', fontSize: 15,fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -512,7 +512,7 @@ class BudgetHomePage extends Component {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteFoodPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
             <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-            <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular'}}>{purchase.price}</Text>
+            <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -521,7 +521,7 @@ class BudgetHomePage extends Component {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteTransportPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
             <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-            <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular'}}>{purchase.price}</Text>
+            <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -530,7 +530,7 @@ class BudgetHomePage extends Component {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteMiscPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
                 <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-                <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular'}}>${purchase.price}</Text>
+                <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular', marginRight: 15}}>${purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -563,6 +563,7 @@ class BudgetHomePage extends Component {
               <TouchableOpacity  onPress={this.openNewMonthModal}>
                 <Text style={styles.startButton}>Start a new month!</Text>
               </TouchableOpacity>
+
             </View>
 
 
@@ -585,6 +586,7 @@ class BudgetHomePage extends Component {
                         <View style={styles.toolTip}>
                           <Text style={styles.toolTipText}>This will archive the current month and begin a new one. Make sure you are done inputing all of your purchases for this month before starting a new one</Text>
                         </View>
+
                     </View>
                   </View>
                 </Modal>
@@ -643,7 +645,7 @@ class BudgetHomePage extends Component {
             <Text style={{fontSize: 20, color:'white', marginRight: 15, fontFamily: 'Lato-Regular'}}>{this.state.displayedMonth}</Text>
           </View>
 
-          <View style={{marginBottom: 40}}>
+          <View style={{marginBottom: 40, marginLeft: 15, marginRight: 15}}>
 
             <View style={styles.expandContainer}>
 
@@ -800,7 +802,7 @@ class BudgetHomePage extends Component {
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.addMiscPurchase}>
-                          <Text style={styles.startButton}>Blast off</Text>
+                          <Text style={styles.startButton}>Submit</Text>
                         </TouchableOpacity>
                     </View>
                   </View>
@@ -936,7 +938,7 @@ class BudgetHomePage extends Component {
       fontSize: 15,
       textAlign: 'center',
       color: '#EAAF69',
-      marginTop: 50,
+      marginTop: 40,
       fontFamily: 'Lato-Regular'
     },
     startOverButton: {
