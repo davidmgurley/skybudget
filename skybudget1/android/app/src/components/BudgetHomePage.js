@@ -256,9 +256,9 @@ class BudgetHomePage extends Component {
             currentMonth[i].entertainmentPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthEntPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthEntPurchases: joined,
-                            entertainmentSpent: this.state.entertainmentSpent + parseFloat(this.state.currentPrice),
+                            entertainmentSpent: parseFloat(this.state.entertainmentSpent + parseFloat(this.state.currentPrice)),
                             entOpen: !this.state.entOpen,
-                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
+                            totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
           }
         }
 
@@ -298,9 +298,9 @@ class BudgetHomePage extends Component {
             currentMonth[i].billsPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthBillsPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthBillsPurchases: joined,
-                            billsSpent: this.state.billsSpent + parseFloat(this.state.currentPrice),
+                            billsSpent: parseFloat(this.state.billsSpent + parseFloat(this.state.currentPrice)),
                             billsOpen: !this.state.billsOpen,
-                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
+                            totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
           }
         }
 
@@ -341,9 +341,9 @@ class BudgetHomePage extends Component {
             currentMonth[i].foodPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthFoodPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthFoodPurchases: joined,
-                            foodSpent: this.state.foodSpent + parseFloat(this.state.currentPrice),
+                            foodSpent: parseFloat(this.state.foodSpent + parseFloat(this.state.currentPrice)),
                             foodOpen: !this.state.foodOpen,
-                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
+                            totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
           }
         }
       })
@@ -384,9 +384,9 @@ class BudgetHomePage extends Component {
             currentMonth[i].transportPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthTransportPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthTransportPurchases: joined,
-                            transportSpent: this.state.transportSpent + parseFloat(this.state.currentPrice),
+                            transportSpent: parseFloat(this.state.transportSpent + parseFloat(this.state.currentPrice)),
                             transportOpen: !this.state.transportOpen,
-                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
+                            totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
           }
         }
       })
@@ -427,9 +427,9 @@ class BudgetHomePage extends Component {
             currentMonth[i].miscPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthMiscPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthMiscPurchases: joined,
-                            miscSpent: this.state.miscSpent + parseFloat(this.state.currentPrice),
+                            miscSpent: parseFloat(this.state.miscSpent + parseFloat(this.state.currentPrice)),
                             miscOpen: !this.state.miscOpen,
-                            totalSpent: this.state.totalSpent + parseFloat(this.state.currentPrice)})
+                            totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
           }
         }
       })

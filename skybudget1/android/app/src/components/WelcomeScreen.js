@@ -13,7 +13,7 @@ class WelcomeScreen extends Component {
           </View>
 
           <Text style={styles.instructions}>
-            Live Looking Up
+            Things are Looking Up
           </Text>
         </View>
         <View >
