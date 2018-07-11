@@ -5,11 +5,11 @@ SKYbudget is a simplified personal budgeting Android app. It guides users to goo
 
 ## Getting Started
 
-Fork and clone the repository and run npm install in main project folder to get started.
+Fork and clone the repository and run npm install in main project folder to get started. Android Studio and Emulator is recommended for development and testing. 
 
 ### Downloadable Version
 
-Sky Budget is currently in closed beta on the Google Play Store
+Sky Budget is currently in closed beta on the Google Play Store contact me for download keys.
 
 ### Contact Me
 
