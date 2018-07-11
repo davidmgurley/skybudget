@@ -15,4 +15,4 @@ Sky Budget is currently in closed beta on the Google Play Store
 
 davidmgurley@gmail.com
 
-![ScreenShot](https://github.com/davidmgurley/skybudget/blob/master/skybudget1/Screenshot_1530554469.png?raw=true)
+![ScreenShot](https://github.com/davidmgurley/skybudget/blob/master/skybudget1/Screenshot_1530553932.png?raw=true)
