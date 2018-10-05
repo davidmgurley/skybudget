@@ -542,7 +542,7 @@ class BudgetHomePage extends Component {
         {this.state.showBudgetHome
           ?
           <View>
-            <View style={{flexDirection: 'row', marginBottom: 50}}>
+            <View style={{flexDirection: 'row', marginBottom: 50, justifyContent: 'center'}}>
               <View style={styles.topBudgetInfoBlockGreen} >
                 <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30 , textAlign:'center', fontFamily: 'Lato-Regular'}}>Remaining </Text>
                 <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
@@ -552,9 +552,9 @@ class BudgetHomePage extends Component {
                 <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
               </View>
             </View>
-            <View style={{flexDirection:'row'}}>
-            <Image style={{width: 250, height:250, marginLeft:20}} source={require('./skybudget.png')} />
-            <Image style={{width: 80, height:120, marginTop:30, marginRight: 20}} source={require('./rocket.png')} />
+            <View style={{flexDirection:'row', justifyContent: 'center'}}>
+              <Image style={{width: 250, height:250, marginLeft:20}} source={require('./skybudget.png')} />
+              <Image style={{width: 80, height:120, marginTop:30, marginRight: 20}} source={require('./rocket.png')} />
             </View>
             <View>
               <TouchableOpacity  onPress={this.goToDetail}>
@@ -910,21 +910,23 @@ class BudgetHomePage extends Component {
     topBudgetInfoBlockRed: {
       marginRight:3,
       marginLeft:3,
-      paddingTop:20,
+      paddingTop:'5%',
       paddingBottom:20,
       borderBottomEndRadius:25,
       borderBottomStartRadius:25,
-      flex: 1,
+      width: '40%',
+      // flex: 1,
       backgroundColor:'#C95B74'
     },
     topBudgetInfoBlockGreen: {
       marginRight:3,
       marginLeft:3,
-      paddingTop:20,
+      paddingTop:'5%',
       paddingBottom:20,
       borderBottomEndRadius:25,
       borderBottomStartRadius:25,
-      flex: 1,
+      width: '40%',
+      // flex: 1,
       backgroundColor:'#5D9D83'
     },
     startButton: {

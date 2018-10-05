@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     color: '#EAAF69',
-    marginBottom: 5,
+    marginBottom: '5%',
     fontFamily: 'Lato-Regular'
   },
   startButton: {
     color: '#2A6972',
     fontSize: 30,
-    marginTop: 20,
+    marginTop: '10%',
     textAlign: 'center',
     fontFamily: 'Lato-Regular'
 
