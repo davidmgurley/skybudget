@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { TotalSchema, HomeSchema, CurrentBalancesSchema, IndividualExpenseSchema, MonthlyBudgetSchema} from './Schemes'
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 const Realm = require('realm')
 
@@ -99,7 +100,7 @@ saveData = () => {
       <View style={styles.container}>
       {this.state.showCreateBudget ?
         <View style={styles.container}>
-          <Image style={{width: 80, height:120}} source={require('./rocket.png')} />
+          <Image style={styles.rocket} source={require('./rocket.png')} />
 
           <Text style={this.state.controlColors}>${this.state.totalMonthlySpending - ((parseFloat(this.state.entertainmentBudget) + parseFloat(this.state.billsBudget) + parseFloat(this.state.foodBudget) + parseFloat(this.state.transportBudget) + parseFloat(this.state.miscBudget) + parseFloat(this.state.reward)))}</Text>
           <Text style={styles.instructions2}>Alright, time to fill out the budget!</Text>
@@ -145,7 +146,7 @@ saveData = () => {
 
 
         <View style={styles.container}>
-          <Image style={{width: 80, height:120}} source={require('./rocket.png')} />
+          <Image style={styles.rocket} source={require('./rocket.png')} />
 
           <Text style={styles.instructions}>How much would you like to spend a month?</Text>
           <View style={styles.dollarInputView}>
@@ -168,13 +169,18 @@ saveData = () => {
 
 
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   individualBudgetInputContainer: {
     fontSize: 20,
     color: 'white',
     justifyContent: 'space-between',
     fontFamily: 'Lato-Regular'
 
+  },
+
+  rocket: {
+    width: '75rem',
+    height: '100rem'
   },
   dollarSignBlue: {
     fontSize:30,
@@ -262,7 +268,7 @@ const styles = StyleSheet.create({
 
   },
   instructions: {
-    fontSize: 30,
+    fontSize: '22rem',
     textAlign: 'center',
     color: '#2A6972',
     marginBottom: 40,

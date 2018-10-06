@@ -7,15 +7,21 @@ import {
   View,
   Button,
   ScrollView,
+  Dimensions,
   AppRegistry
 } from 'react-native';
 
 import WelcomeScreen from './android/app/src/components/WelcomeScreen'
 import GettingStarted from './android/app/src/components/GettingStarted'
 import BudgetHomePage from './android/app/src/components/BudgetHomePage'
+import EStyleSheet from 'react-native-extended-stylesheet'
+
 import { TotalSchema, HomeSchema, CurrentBalancesSchema, IndividualExpenseSchema, MonthlyBudgetSchema} from './android/app/src/components/Schemes'
 
 const Realm = require('realm')
+
+const entireScreenWidth = Dimensions.get('window').width;
+EStyleSheet.build({$rem: entireScreenWidth / 380})
 
 
 export default class App extends Component {
@@ -78,7 +84,7 @@ export default class App extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
