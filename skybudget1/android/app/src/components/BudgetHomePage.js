@@ -3,7 +3,7 @@ import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, S
 import Swipeout from 'react-native-swipeout'
 import { TotalSchema, CurrentBalancesSchema, HomeSchema, MonthlyBudgetSchema, IndividualExpenseSchema } from './Schemes'
 import Expand from 'react-native-simple-expand'
-
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 const Realm = require('realm')
 
@@ -544,24 +544,24 @@ class BudgetHomePage extends Component {
           <View>
             <View style={{flexDirection: 'row', marginBottom: 50, justifyContent: 'center'}}>
               <View style={styles.topBudgetInfoBlockGreen} >
-                <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30 , textAlign:'center', fontFamily: 'Lato-Regular'}}>Remaining </Text>
-                <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
+                <Text style={styles.topBudgetTextGreen}>Remaining </Text>
+                <Text style={styles.topBudgetTextGreen}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
               </View>
               <View style={styles.topBudgetInfoBlockRed}>
-                <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>Spent</Text>
-                <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
+                <Text style={styles.topBudgetTextRed}>Spent</Text>
+                <Text style={styles.topBudgetTextRed}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
               </View>
             </View>
             <View style={{flexDirection:'row', justifyContent: 'center'}}>
-              <Image style={{width: 250, height:250, marginLeft:20}} source={require('./skybudget.png')} />
-              <Image style={{width: 80, height:120, marginTop:30, marginRight: 20}} source={require('./rocket.png')} />
+              <Image style={styles.logo} source={require('./skybudget.png')} />
+              <Image style={styles.rocket} source={require('./rocket.png')} />
             </View>
-            <View>
+            <View style={styles.startButtonHomePageContainer}>
               <TouchableOpacity  onPress={this.goToDetail}>
-                <Text style={styles.startButton}>Go to detail page</Text>
+                <Text style={styles.startButtonHomePage}>Go to detail page</Text>
               </TouchableOpacity>
               <TouchableOpacity  onPress={this.openNewMonthModal}>
-                <Text style={styles.startButton}>Start a new month!</Text>
+                <Text style={styles.startButtonHomePage}>Start a new month!</Text>
               </TouchableOpacity>
 
             </View>
@@ -847,13 +847,25 @@ class BudgetHomePage extends Component {
     }
   }
 
-  const styles = StyleSheet.create({
+  const styles = EStyleSheet.create({
     budgetGroup: {
       backgroundColor: '#1B2F4A',
       flex: 1,
       justifyContent: 'space-between',
       flexDirection: 'row',
       marginBottom: 5,
+    },
+    logo:{
+      width: '300rem',
+      height: '100rem',
+      marginLeft: '-15rem',
+      marginTop: '50rem'
+    },
+    rocket: {
+      width: '60rem',
+      height:'69rem',
+      marginLeft: '-50rem',
+      marginTop: '40rem'
     },
     budgetGroupPurchases:{
       backgroundColor: '#1B2F4A',
@@ -902,45 +914,68 @@ class BudgetHomePage extends Component {
       fontFamily: 'Lato-Regular'
     },
     remainingTextRed: {
-      fontSize: 30,
+      fontSize: '30rem',
       backgroundColor: '#C95B74',
       color: 'white',
       fontFamily: 'Lato-Regular'
     },
     topBudgetInfoBlockRed: {
-      marginRight:3,
-      marginLeft:3,
+      marginRight:'5rem',
+      marginLeft:'1rem',
       paddingTop:'5%',
-      paddingBottom:20,
+      paddingBottom:'20rem',
       borderBottomEndRadius:25,
       borderBottomStartRadius:25,
-      width: '40%',
-      // flex: 1,
+      width: '175rem',
       backgroundColor:'#C95B74'
     },
     topBudgetInfoBlockGreen: {
-      marginRight:3,
-      marginLeft:3,
+      marginRight:'1rem',
+      marginLeft:'5rem',
       paddingTop:'5%',
-      paddingBottom:20,
+      paddingBottom:'20rem',
       borderBottomEndRadius:25,
       borderBottomStartRadius:25,
-      width: '40%',
-      // flex: 1,
+      width: '175rem',
       backgroundColor:'#5D9D83'
+    },
+    topBudgetTextGreen: {
+      backgroundColor:'#5D9D83',
+      color:'white',
+      fontSize: '25rem',
+      textAlign:'center',
+      fontFamily: 'Lato-Regular'
+    },
+    topBudgetTextRed:{
+      backgroundColor:'#C95B74',
+      color:'white',
+      fontSize: '25rem',
+      textAlign:'center',
+      fontFamily: 'Lato-Regular'
+    },
+    startButtonHomePageContainer:{
+      marginTop: '50rem'
+    },
+    startButtonHomePage: {
+      color: '#2A6972',
+      fontSize: '25rem',
+      marginTop: 5,
+      textAlign: 'center',
+      fontFamily: 'Lato-Regular'
     },
     startButton: {
       color: '#2A6972',
-      fontSize: 30,
+      fontSize: '25rem',
       marginTop: 5,
       textAlign: 'center',
       fontFamily: 'Lato-Regular'
     },
     eraseButton:{
-      fontSize: 15,
+      fontSize: '12rem',
       textAlign: 'center',
       color: '#EAAF69',
       marginTop: 40,
+      marginBottom: '30rem',
       fontFamily: 'Lato-Regular'
     },
     startOverButton: {
