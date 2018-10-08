@@ -576,7 +576,7 @@ class BudgetHomePage extends Component {
                     this.openNewMonthModal()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems: 'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentInputMonth => this.setState({currentInputMonth})} placeholder='Month'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentInputYear => this.setState({currentInputYear})} placeholder='Year' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.startNewMonth}>
@@ -605,7 +605,7 @@ class BudgetHomePage extends Component {
                     this.openEraseBudget()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems: 'center'}}>
                       <View style={styles.toolTipWarning}>
                         <Text style={styles.toolTipText}>Don't be hasty! Erasing the budget will wipe away your current budget and let you start all over! This cannot be undone.</Text>
                         <Text style={styles.toolTipText}>Also, your monthly budgets are archived based on their unique month and year combination. If you want to start a month with your new budget that already exists, just give your new month a different name! Get creative!</Text>
@@ -629,7 +629,7 @@ class BudgetHomePage extends Component {
 
           :
 
-        <ScrollView style={{width:376}}>
+        <ScrollView style={styles.scrollViewBudgetDetail}>
           <View style={{flexDirection: 'row'}}>
             <View style={styles.topBudgetInfoBlockGreen} >
               <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30 , textAlign:'center', fontFamily: 'Lato-Regular'}}>Remaining </Text>
@@ -658,7 +658,7 @@ class BudgetHomePage extends Component {
                     this.setEntModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems:'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.addEntPurchase}>
@@ -980,23 +980,25 @@ class BudgetHomePage extends Component {
     },
     startOverButton: {
       color: 'white',
-      fontSize: 30,
-      marginTop: 10,
+      fontSize: '27rem',
+      marginTop: '10rem',
       textAlign: 'center',
       backgroundColor: '#C95B74',
-      paddingRight: 10,
-      paddingLeft: 10,
+      marginRight: '5rem',
+      paddingRight: '10rem',
+      paddingLeft: '10rem',
       borderRadius: 5,
       fontFamily: 'Lato-Regular'
     },
     startSubmitButton: {
       color: 'white',
-      fontSize: 30,
-      marginTop: 10,
+      fontSize: '27rem',
+      marginTop: '10rem',
       textAlign: 'center',
       backgroundColor: '#5D9D83',
-      paddingRight: 10,
-      paddingLeft: 10,
+      marginLeft: '5rem',
+      paddingRight: '10rem',
+      paddingLeft: '10rem',
       borderRadius: 5,
       fontFamily: 'Lato-Regular'
     },
@@ -1014,33 +1016,38 @@ class BudgetHomePage extends Component {
       fontFamily: 'Lato-Regular'
     },
     toolTip: {
-      height: 190,
-      marginLeft: 8,
-      width: 395,
+      height: '170rem',
+      width: '275rem',
       backgroundColor: '#EAAF69',
-      marginTop: 50,
+      marginTop: '125rem',
       justifyContent: 'center',
       borderRadius: 20
     },
     toolTipWarning: {
-      height: 240,
+      height: '225rem',
       marginLeft: 8,
-      width: 395,
+      width: '275rem',
       backgroundColor: '#EAAF69',
-      marginTop: 50,
+      marginTop: '30rem',
       justifyContent: 'center',
       borderRadius: 20
     },
     toolTipText: {
-      marginLeft: 30,
-      marginRight: 30,
-      marginTop: 5,
-      marginBottom: 8,
-      fontSize: 18,
+      marginLeft: '30rem',
+      marginRight: '30rem',
+      marginTop: '5rem',
+      marginBottom: '5rem',
+      fontSize: '15rem',
       fontFamily: 'Lato-Regular'
     },
+    scrollViewBudgetDetail: {
+      flex:1,
+      marginRight:'15rem',
+      marginLeft:'15rem'
+    },
     modalText: {
-      fontSize: 25,
+      fontSize: '23rem',
+      width: '200rem',
       color: 'white',
       fontFamily: 'Lato-Regular'
     }
