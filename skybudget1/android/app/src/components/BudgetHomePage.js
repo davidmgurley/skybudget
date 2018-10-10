@@ -17,7 +17,7 @@ class BudgetHomePage extends Component {
     super(props)
     this.state = { realm: null,
                    currentItem: '',
-                   currentPrice: '',
+                   currentPrice: '0',
                    totalSpent: '0',
 
                    entModalVisible: false,
@@ -160,7 +160,7 @@ class BudgetHomePage extends Component {
         })
         this.setState({  realm: null,
                          currentItem: '',
-                         currentPrice: '',
+                         currentPrice: '0',
                          totalSpent: '0',
 
                          entModalVisible: false,
@@ -214,7 +214,7 @@ class BudgetHomePage extends Component {
         })
         this.setState({  realm: null,
                          currentItem: '',
-                         currentPrice: '',
+                         currentPrice: '0',
                          totalSpent: '0',
 
                          entModalVisible: false,
@@ -256,6 +256,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].entertainmentPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthEntPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthEntPurchases: joined,
+                            currentPrice: '0',
                             entertainmentSpent: parseFloat(this.state.entertainmentSpent + parseFloat(this.state.currentPrice)),
                             entOpen: !this.state.entOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -298,6 +299,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].billsPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthBillsPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthBillsPurchases: joined,
+                            currentPrice: '0',
                             billsSpent: parseFloat(this.state.billsSpent + parseFloat(this.state.currentPrice)),
                             billsOpen: !this.state.billsOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -341,6 +343,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].foodPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthFoodPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthFoodPurchases: joined,
+                            currentPrice: '0',
                             foodSpent: parseFloat(this.state.foodSpent + parseFloat(this.state.currentPrice)),
                             foodOpen: !this.state.foodOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -384,6 +387,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].transportPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthTransportPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthTransportPurchases: joined,
+                            currentPrice: '0',
                             transportSpent: parseFloat(this.state.transportSpent + parseFloat(this.state.currentPrice)),
                             transportOpen: !this.state.transportOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -427,6 +431,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].miscPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthMiscPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthMiscPurchases: joined,
+                            currentPrice: '0',
                             miscSpent: parseFloat(this.state.miscSpent + parseFloat(this.state.currentPrice)),
                             miscOpen: !this.state.miscOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -558,7 +563,7 @@ class BudgetHomePage extends Component {
             </View>
             <View style={styles.startButtonHomePageContainer}>
               <TouchableOpacity  onPress={this.goToDetail}>
-                <Text style={styles.startButtonHomePage}>Go to detail page</Text>
+                <Text style={styles.startDetailButtonHomePage}>Edit Expenses</Text>
               </TouchableOpacity>
               <TouchableOpacity  onPress={this.openNewMonthModal}>
                 <Text style={styles.startButtonHomePage}>Start a new month!</Text>
@@ -585,6 +590,7 @@ class BudgetHomePage extends Component {
 
                         <View style={styles.toolTip}>
                           <Text style={styles.toolTipText}>This will archive the current month and begin a new one. Make sure you are done inputing all of your purchases for this month before starting a new one</Text>
+                          <Text style={styles.toolTipText}>Your monthly budgets are archived based on their unique month and year combination. If you want to start a new month that already exists, just give your new month a different name! Get creative!</Text>
                         </View>
 
                     </View>
@@ -859,7 +865,7 @@ class BudgetHomePage extends Component {
       width: '300rem',
       height: '100rem',
       marginLeft: '-15rem',
-      marginTop: '50rem'
+      marginTop: '50rem',
     },
     rocket: {
       width: '60rem',
@@ -954,13 +960,32 @@ class BudgetHomePage extends Component {
       fontFamily: 'Lato-Regular'
     },
     startButtonHomePageContainer:{
-      marginTop: '50rem'
+      marginTop: '50rem',
+      alignItems: 'center'
     },
     startButtonHomePage: {
-      color: '#2A6972',
-      fontSize: '25rem',
-      marginTop: 5,
+      color: '#1B2F4A',
+      width: '240rem',
+      fontSize: '20rem',
+      marginTop: '10rem',
       textAlign: 'center',
+      backgroundColor: '#EAAF69',
+      paddingTop: '10rem',
+      paddingBottom: '10rem',
+      paddingRight: '10rem',
+      paddingLeft: '10rem',
+      borderRadius: 20,
+      fontFamily: 'Lato-Regular'
+    },
+    startDetailButtonHomePage:{
+      color: '#1B2F4A',
+      width: '240rem',
+      fontSize: '20rem',
+      textAlign: 'center',
+      backgroundColor: '#EAAF69',
+      paddingTop: '10rem',
+      paddingBottom: '10rem',
+      borderRadius: 20,
       fontFamily: 'Lato-Regular'
     },
     startButton: {
@@ -1016,10 +1041,10 @@ class BudgetHomePage extends Component {
       fontFamily: 'Lato-Regular'
     },
     toolTip: {
-      height: '170rem',
+      height: '235rem',
       width: '275rem',
       backgroundColor: '#EAAF69',
-      marginTop: '125rem',
+      marginTop: '60rem',
       justifyContent: 'center',
       borderRadius: 20
     },
