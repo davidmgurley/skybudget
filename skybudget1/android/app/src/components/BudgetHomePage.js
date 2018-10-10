@@ -3,7 +3,7 @@ import { Text, AppRegistry, View, StyleSheet, TextInput, Button, AsyncStorage, S
 import Swipeout from 'react-native-swipeout'
 import { TotalSchema, CurrentBalancesSchema, HomeSchema, MonthlyBudgetSchema, IndividualExpenseSchema } from './Schemes'
 import Expand from 'react-native-simple-expand'
-
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 const Realm = require('realm')
 
@@ -17,7 +17,7 @@ class BudgetHomePage extends Component {
     super(props)
     this.state = { realm: null,
                    currentItem: '',
-                   currentPrice: '',
+                   currentPrice: '0',
                    totalSpent: '0',
 
                    entModalVisible: false,
@@ -160,7 +160,7 @@ class BudgetHomePage extends Component {
         })
         this.setState({  realm: null,
                          currentItem: '',
-                         currentPrice: '',
+                         currentPrice: '0',
                          totalSpent: '0',
 
                          entModalVisible: false,
@@ -214,7 +214,7 @@ class BudgetHomePage extends Component {
         })
         this.setState({  realm: null,
                          currentItem: '',
-                         currentPrice: '',
+                         currentPrice: '0',
                          totalSpent: '0',
 
                          entModalVisible: false,
@@ -256,6 +256,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].entertainmentPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthEntPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthEntPurchases: joined,
+                            currentPrice: '0',
                             entertainmentSpent: parseFloat(this.state.entertainmentSpent + parseFloat(this.state.currentPrice)),
                             entOpen: !this.state.entOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -298,6 +299,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].billsPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthBillsPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthBillsPurchases: joined,
+                            currentPrice: '0',
                             billsSpent: parseFloat(this.state.billsSpent + parseFloat(this.state.currentPrice)),
                             billsOpen: !this.state.billsOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -341,6 +343,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].foodPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthFoodPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthFoodPurchases: joined,
+                            currentPrice: '0',
                             foodSpent: parseFloat(this.state.foodSpent + parseFloat(this.state.currentPrice)),
                             foodOpen: !this.state.foodOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -384,6 +387,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].transportPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthTransportPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthTransportPurchases: joined,
+                            currentPrice: '0',
                             transportSpent: parseFloat(this.state.transportSpent + parseFloat(this.state.currentPrice)),
                             transportOpen: !this.state.transportOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -427,6 +431,7 @@ class BudgetHomePage extends Component {
             currentMonth[i].miscPurchases.push({item: this.state.currentItem, price: this.state.currentPrice})
             let joined = this.state.currentMonthMiscPurchases.concat({price: this.state.currentPrice, item: this.state.currentItem})
             this.setState({ currentMonthMiscPurchases: joined,
+                            currentPrice: '0',
                             miscSpent: parseFloat(this.state.miscSpent + parseFloat(this.state.currentPrice)),
                             miscOpen: !this.state.miscOpen,
                             totalSpent: parseFloat(this.state.totalSpent + parseFloat(this.state.currentPrice))})
@@ -493,8 +498,8 @@ class BudgetHomePage extends Component {
     const fillEntData = this.state.currentMonthEntPurchases.map(purchase => {
       return <Swipeout  backgroundColor='#1B2F4A' right={[{ onPress:this.deleteEntPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
-             <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-             <Text style={{color:'white', fontSize: 15,fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
+             <Text style={styles.purchasedItemDetail}>{purchase.item}</Text>
+             <Text style={styles.purchasedItemPrice}>{purchase.price}</Text>
              </View>
              </Swipeout>
     })
@@ -502,8 +507,8 @@ class BudgetHomePage extends Component {
     const fillBillsData = this.state.currentMonthBillsPurchases.map(purchase => {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteBillsPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
-            <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-            <Text style={{color:'white', fontSize: 15,fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
+            <Text style={styles.purchasedItemDetail}>{purchase.item}</Text>
+            <Text style={styles.purchasedItemPrice}>{purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -511,8 +516,8 @@ class BudgetHomePage extends Component {
     const fillFoodData = this.state.currentMonthFoodPurchases.map(purchase => {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteFoodPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
-            <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-            <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
+            <Text style={styles.purchasedItemDetail}>{purchase.item}</Text>
+            <Text style={styles.purchasedItemPrice}>{purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -520,8 +525,8 @@ class BudgetHomePage extends Component {
     const fillTransportData = this.state.currentMonthTransportPurchases.map(purchase => {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteTransportPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
-            <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-            <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular', marginRight: 15}}>{purchase.price}</Text>
+            <Text style={styles.purchasedItemDetail}>{purchase.item}</Text>
+            <Text style={styles.purchasedItemPrice}>{purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -529,8 +534,8 @@ class BudgetHomePage extends Component {
     const fillMiscData = this.state.currentMonthMiscPurchases.map(purchase => {
       return <Swipeout backgroundColor='#1B2F4A' right={[{ onPress:this.deleteMiscPurchase.bind(this, purchase.item + parseFloat(purchase.price)),  backgroundColor: '#C95B74', text: 'Delete'}]}>
             <View style={styles.budgetGroupPurchases}>
-                <Text style={{color:'white', fontSize:15, fontStyle: 'italic', fontFamily: 'Lato-Regular'}}>{purchase.item}</Text>
-                <Text style={{color:'white', fontSize: 15, fontFamily: 'Lato-Regular', marginRight: 15}}>${purchase.price}</Text>
+                <Text style={styles.purchasedItemDetail}>{purchase.item}</Text>
+                <Text style={styles.purchasedItemPrice}>${purchase.price}</Text>
             </View>
             </Swipeout>
     })
@@ -541,33 +546,33 @@ class BudgetHomePage extends Component {
       <View style={{flex: 1}}>
         {this.state.showBudgetHome
           ?
-          <View>
-            <View style={{flexDirection: 'row', marginBottom: 50}}>
+          <ScrollView>
+            <View style={styles.homePageBudgetDetailContainer}>
               <View style={styles.topBudgetInfoBlockGreen} >
-                <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30 , textAlign:'center', fontFamily: 'Lato-Regular'}}>Remaining </Text>
-                <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
+                <Text style={styles.topBudgetTextGreen}>Remaining </Text>
+                <Text style={styles.topBudgetTextGreen}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
               </View>
               <View style={styles.topBudgetInfoBlockRed}>
-                <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>Spent</Text>
-                <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
+                <Text style={styles.topBudgetTextRed}>Spent</Text>
+                <Text style={styles.topBudgetTextRed}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
               </View>
             </View>
-            <View style={{flexDirection:'row'}}>
-            <Image style={{width: 250, height:250, marginLeft:20}} source={require('./skybudget.png')} />
-            <Image style={{width: 80, height:120, marginTop:30, marginRight: 20}} source={require('./rocket.png')} />
+            <View style={{flexDirection:'row', justifyContent: 'center'}}>
+              <Image style={styles.logo} source={require('./skybudget.png')} />
+              <Image style={styles.rocket} source={require('./rocket.png')} />
             </View>
-            <View>
+            <View style={styles.startButtonHomePageContainer}>
               <TouchableOpacity  onPress={this.goToDetail}>
-                <Text style={styles.startButton}>Go to detail page</Text>
+                <Text style={styles.startDetailButtonHomePage}>Edit Expenses</Text>
               </TouchableOpacity>
               <TouchableOpacity  onPress={this.openNewMonthModal}>
-                <Text style={styles.startButton}>Start a new month!</Text>
+                <Text style={styles.startButtonHomePage}>Start a new month!</Text>
               </TouchableOpacity>
 
             </View>
 
 
-              <View style={{marginTop: 22,}}>
+              <View style={styles.categoryContaine}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -576,7 +581,7 @@ class BudgetHomePage extends Component {
                     this.openNewMonthModal()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems: 'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentInputMonth => this.setState({currentInputMonth})} placeholder='Month'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentInputYear => this.setState({currentInputYear})} placeholder='Year' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.startNewMonth}>
@@ -585,6 +590,7 @@ class BudgetHomePage extends Component {
 
                         <View style={styles.toolTip}>
                           <Text style={styles.toolTipText}>This will archive the current month and begin a new one. Make sure you are done inputing all of your purchases for this month before starting a new one</Text>
+                          <Text style={styles.toolTipText}>Your monthly budgets are archived based on their unique month and year combination. If you want to start a new month that already exists, just give your new month a different name! Get creative!</Text>
                         </View>
 
                     </View>
@@ -596,7 +602,7 @@ class BudgetHomePage extends Component {
                 <Text style={styles.eraseButton}>Erase Budget and Start Over</Text>
               </TouchableOpacity>
 
-              <View style={{marginTop: 22,}}>
+              <View style={styles.categoryContainer}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -605,7 +611,7 @@ class BudgetHomePage extends Component {
                     this.openEraseBudget()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems: 'center'}}>
                       <View style={styles.toolTipWarning}>
                         <Text style={styles.toolTipText}>Don't be hasty! Erasing the budget will wipe away your current budget and let you start all over! This cannot be undone.</Text>
                         <Text style={styles.toolTipText}>Also, your monthly budgets are archived based on their unique month and year combination. If you want to start a month with your new budget that already exists, just give your new month a different name! Get creative!</Text>
@@ -625,31 +631,31 @@ class BudgetHomePage extends Component {
               </View>
 
 
-          </View>
+          </ScrollView>
 
           :
 
-        <ScrollView style={{width:376}}>
+        <ScrollView style={styles.scrollViewBudgetDetail}>
           <View style={{flexDirection: 'row'}}>
             <View style={styles.topBudgetInfoBlockGreen} >
-              <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30 , textAlign:'center', fontFamily: 'Lato-Regular'}}>Remaining </Text>
-              <Text style={{backgroundColor:'#5D9D83', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
+              <Text style={styles.topBudgetTextGreen}>Remaining </Text>
+              <Text style={styles.topBudgetTextGreen}>{parseFloat(this.props.totalData - this.state.totalSpent).toFixed(2)}</Text>
             </View>
             <View style={styles.topBudgetInfoBlockRed}>
-              <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>Spent</Text>
-              <Text style={{backgroundColor:'#C95B74', color:'white', fontSize: 30, textAlign:'center', fontFamily: 'Lato-Regular'}}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
+              <Text style={styles.topBudgetTextRed}>Spent</Text>
+              <Text style={styles.topBudgetTextRed}>{parseFloat(this.state.totalSpent).toFixed(2)}</Text>
             </View>
           </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginBottom:10}}>
-            <Text style={{fontSize: 20, color:'white', marginLeft: 15, fontFamily: 'Lato-Regular'}}>${this.props.totalData}</Text>
-            <Text style={{fontSize: 20, color:'white', marginRight: 15, fontFamily: 'Lato-Regular'}}>{this.state.displayedMonth}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 15, marginBottom:15}}>
+            <Text style={styles.belowTopBudgetInfo}>${this.props.totalData}</Text>
+            <Text style={styles.belowTopBudgetInfo}>{this.state.displayedMonth}</Text>
           </View>
 
-          <View style={{marginBottom: 40, marginLeft: 15, marginRight: 15}}>
+          <View style={styles.budgetDetailPageDetailContainer}>
 
             <View style={styles.expandContainer}>
 
-              <View  style={{marginTop: 22}}>
+              <View  style={styles.categoryContainer}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -658,7 +664,7 @@ class BudgetHomePage extends Component {
                     this.setEntModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems:'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.addEntPurchase}>
@@ -684,7 +690,7 @@ class BudgetHomePage extends Component {
             </View>
             <View style={styles.expandContainer}>
 
-              <View  style={{marginTop: 22}}>
+              <View  style={styles.categoryContainer}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -693,7 +699,7 @@ class BudgetHomePage extends Component {
                     this.setBillsModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems:'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.addBillsPurchase}>
@@ -719,7 +725,7 @@ class BudgetHomePage extends Component {
             </View>
 
             <View style={styles.expandContainer}>
-              <View  style={{marginTop: 22}}>
+              <View  style={styles.categoryContainer}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -728,7 +734,7 @@ class BudgetHomePage extends Component {
                     this.setFoodModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems:'center', alignItems:'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.addFoodPurchase}>
@@ -754,7 +760,7 @@ class BudgetHomePage extends Component {
             </View>
             <View style={styles.expandContainer}>
 
-              <View  style={{marginTop: 22}}>
+              <View  style={styles.categoryContainer}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -763,7 +769,7 @@ class BudgetHomePage extends Component {
                     this.setTransportModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems:'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.addTransportPurchase}>
@@ -789,7 +795,7 @@ class BudgetHomePage extends Component {
             </View>
             <View style={styles.expandContainer}>
 
-              <View  style={{ justifyContent: 'center', marginTop: 22}}>
+              <View  style={styles.categoryContainer}>
                 <Modal
                   animationType="slide"
                   transparent={false}
@@ -798,7 +804,7 @@ class BudgetHomePage extends Component {
                     this.setMiscModalVisible()
                   }}>
                   <View style={{flex:1, backgroundColor:'#1B2F4A'}}>
-                    <View style={{marginTop:75,justifyContent:'center'}}>
+                    <View style={{marginTop:75,justifyContent:'center', alignItems:'center'}}>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentItem => this.setState({currentItem})} placeholder='Purchase Detail'></TextInput>
                       <TextInput style={styles.modalText} placeholderTextColor='white' onChangeText= {currentPrice => this.setState({currentPrice})} placeholder='Price' keyboardType='numeric'></TextInput>
                         <TouchableOpacity  onPress={this.addMiscPurchase}>
@@ -847,13 +853,25 @@ class BudgetHomePage extends Component {
     }
   }
 
-  const styles = StyleSheet.create({
+  const styles = EStyleSheet.create({
     budgetGroup: {
       backgroundColor: '#1B2F4A',
       flex: 1,
       justifyContent: 'space-between',
       flexDirection: 'row',
       marginBottom: 5,
+    },
+    logo:{
+      width: '300rem',
+      height: '100rem',
+      marginLeft: '-15rem',
+      marginTop: '50rem',
+    },
+    rocket: {
+      width: '60rem',
+      height:'69rem',
+      marginLeft: '-50rem',
+      marginTop: '40rem'
     },
     budgetGroupPurchases:{
       backgroundColor: '#1B2F4A',
@@ -872,138 +890,219 @@ class BudgetHomePage extends Component {
       backgroundColor: '#1B2F4A',
     },
     categoryText: {
-      fontSize: 25,
+      fontSize: '21rem',
       color: 'white',
       fontFamily: 'Lato-Regular'
     },
     categoryTextReward: {
       textAlign: 'center',
-      fontSize: 30,
+      fontSize: '22rem',
       color: 'white',
       marginBottom: 8,
       fontFamily: 'Lato-Regular'
     },
     remainingText: {
-      fontSize: 30,
+      fontSize: '22rem',
       backgroundColor: '#2A6972',
       color: 'white',
       borderRadius: 5,
-      width: 150,
+      width: '120rem',
       textAlign:'center',
       fontFamily: 'Lato-Regular'
     },
     rewardText: {
-      fontSize: 25,
+      fontSize: '22rem',
       backgroundColor: '#2A6972',
       color: 'white',
       borderRadius: 5,
-      width: 120,
+      width: '120rem',
       textAlign:'center',
       fontFamily: 'Lato-Regular'
     },
     remainingTextRed: {
-      fontSize: 30,
+      fontSize: '30rem',
       backgroundColor: '#C95B74',
       color: 'white',
       fontFamily: 'Lato-Regular'
     },
     topBudgetInfoBlockRed: {
-      marginRight:3,
-      marginLeft:3,
-      paddingTop:20,
-      paddingBottom:20,
+      marginRight:'5rem',
+      marginLeft:'1rem',
+      paddingTop:'5%',
+      paddingBottom:'20rem',
       borderBottomEndRadius:25,
       borderBottomStartRadius:25,
-      flex: 1,
+      width: '165rem',
       backgroundColor:'#C95B74'
     },
     topBudgetInfoBlockGreen: {
-      marginRight:3,
-      marginLeft:3,
-      paddingTop:20,
-      paddingBottom:20,
+      marginRight:'1rem',
+      marginLeft:'5rem',
+      paddingTop:'5%',
+      paddingBottom:'20rem',
       borderBottomEndRadius:25,
       borderBottomStartRadius:25,
-      flex: 1,
+      width: '165rem',
       backgroundColor:'#5D9D83'
+    },
+    topBudgetTextGreen: {
+      backgroundColor:'#5D9D83',
+      color:'white',
+      fontSize: '25rem',
+      textAlign:'center',
+      fontFamily: 'Lato-Regular'
+    },
+    topBudgetTextRed:{
+      backgroundColor:'#C95B74',
+      color:'white',
+      fontSize: '25rem',
+      textAlign:'center',
+      fontFamily: 'Lato-Regular'
+    },
+    startButtonHomePageContainer:{
+      marginTop: '50rem',
+      alignItems: 'center'
+    },
+    startButtonHomePage: {
+      color: '#1B2F4A',
+      width: '240rem',
+      fontSize: '20rem',
+      marginTop: '10rem',
+      textAlign: 'center',
+      backgroundColor: '#EAAF69',
+      paddingTop: '10rem',
+      paddingBottom: '10rem',
+      paddingRight: '10rem',
+      paddingLeft: '10rem',
+      borderRadius: 20,
+      fontFamily: 'Lato-Regular'
+    },
+    startDetailButtonHomePage:{
+      color: '#1B2F4A',
+      width: '240rem',
+      fontSize: '20rem',
+      textAlign: 'center',
+      backgroundColor: '#EAAF69',
+      paddingTop: '10rem',
+      paddingBottom: '10rem',
+      borderRadius: 20,
+      fontFamily: 'Lato-Regular'
     },
     startButton: {
       color: '#2A6972',
-      fontSize: 30,
+      fontSize: '25rem',
       marginTop: 5,
       textAlign: 'center',
       fontFamily: 'Lato-Regular'
     },
     eraseButton:{
-      fontSize: 15,
+      fontSize: '12rem',
       textAlign: 'center',
       color: '#EAAF69',
       marginTop: 40,
+      marginBottom: '30rem',
       fontFamily: 'Lato-Regular'
     },
     startOverButton: {
       color: 'white',
-      fontSize: 30,
-      marginTop: 10,
+      fontSize: '27rem',
+      marginTop: '10rem',
       textAlign: 'center',
       backgroundColor: '#C95B74',
-      paddingRight: 10,
-      paddingLeft: 10,
+      marginRight: '5rem',
+      paddingRight: '10rem',
+      paddingLeft: '10rem',
       borderRadius: 5,
       fontFamily: 'Lato-Regular'
     },
     startSubmitButton: {
       color: 'white',
-      fontSize: 30,
-      marginTop: 10,
+      fontSize: '27rem',
+      marginTop: '10rem',
       textAlign: 'center',
       backgroundColor: '#5D9D83',
-      paddingRight: 10,
-      paddingLeft: 10,
+      marginLeft: '5rem',
+      paddingRight: '10rem',
+      paddingLeft: '10rem',
       borderRadius: 5,
       fontFamily: 'Lato-Regular'
     },
     purchaseButton:{
       color: '#2A6972',
-      fontSize: 30,
+      fontSize: '25rem',
       marginTop: 5,
       textAlign: 'center',
       fontFamily: 'Lato-Regular'
     },
     rewardButton:{
-      fontSize: 15,
+      fontSize: '12rem',
       textAlign: 'center',
       color: '#EAAF69',
       fontFamily: 'Lato-Regular'
     },
     toolTip: {
-      height: 190,
-      marginLeft: 8,
-      width: 395,
+      height: '235rem',
+      width: '275rem',
       backgroundColor: '#EAAF69',
-      marginTop: 50,
+      marginTop: '60rem',
       justifyContent: 'center',
       borderRadius: 20
     },
     toolTipWarning: {
-      height: 240,
+      height: '225rem',
       marginLeft: 8,
-      width: 395,
+      width: '275rem',
       backgroundColor: '#EAAF69',
-      marginTop: 50,
+      marginTop: '30rem',
       justifyContent: 'center',
       borderRadius: 20
     },
     toolTipText: {
-      marginLeft: 30,
-      marginRight: 30,
-      marginTop: 5,
-      marginBottom: 8,
-      fontSize: 18,
+      marginLeft: '30rem',
+      marginRight: '30rem',
+      marginTop: '5rem',
+      marginBottom: '5rem',
+      fontSize: '15rem',
+      fontFamily: 'Lato-Regular'
+    },
+    scrollViewBudgetDetail: {
+      flex:1
+    },
+    homePageBudgetDetailContainer:{
+      flexDirection: 'row',
+      marginBottom: '40rem',
+      justifyContent: 'center'
+    },
+    belowTopBudgetInfo:{
+      fontSize: '15rem',
+      color:'white',
+      marginLeft: '15rem',
+      marginRight: '15rem',
+      fontFamily: 'Lato-Regular'
+    },
+    budgetDetailPageDetailContainer:{
+      marginBottom: '10rem',
+      marginLeft: '15rem',
+      marginRight: '15rem'
+    },
+    categoryContainer:{
+      marginTop:'18rem'
+    },
+    purchasedItemDetail:{
+      color:'white',
+      fontSize:'12rem',
+      fontStyle: 'italic',
+      fontFamily: 'Lato-Regular'
+    },
+    purchasedItemPrice:{
+      color:'white',
+      fontSize:'12rem',
+      fontStyle: 'italic',
       fontFamily: 'Lato-Regular'
     },
     modalText: {
-      fontSize: 25,
+      fontSize: '23rem',
+      width: '200rem',
       color: 'white',
       fontFamily: 'Lato-Regular'
     }
